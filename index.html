@@ -1449,6 +1449,7 @@
     if (!m) return Promise.resolve();
 
     isAnimating = true;
+    updateCreditUI();
     const layerCubies = getLayerCubies(m.axis, m.layer);
     const pivot = new THREE.Group();
     cubeGroup.add(pivot);
@@ -1887,6 +1888,7 @@
   });
 
   function useHint() {
+    if (isAnimating || isSolving || isHinting) return;
     if (moveHistory.length === 0) return;
     if (gameState === 'idle' || gameState === 'scrambling') {
       setGameState('playing');
