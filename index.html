@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>PIXL — Twist It. Solve It. Win It.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pixl-bg-1: #1a0a3d;
+    --pixl-bg-2: #2d1466;
+    --pixl-bg-3: #0d0524;
+    --pixl-purple: #6b3df5;
+    --pixl-purple-light: #a78bfa;
+    --pixl-magenta: #ff2d92;
+    --pixl-pink: #ff5cb8;
+    --pixl-lime: #d4ff3a;
+    --pixl-cyan: #3df5ff;
+    --pixl-orange: #ff8a1a;
+    --pixl-white: #fafaff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--pixl-bg-3);
+    color: var(--pixl-white);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  body { min-height: 100dvh; }
+
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    background:
+      radial-gradient(ellipse 80% 60% at 75% 40%, rgba(255, 45, 146, 0.28), transparent 60%),
+      radial-gradient(ellipse 60% 80% at 20% 70%, rgba(107, 61, 245, 0.38), transparent 60%),
+      linear-gradient(160deg, var(--pixl-bg-1) 0%, var(--pixl-bg-2) 45%, var(--pixl-bg-3) 100%);
+    overflow: hidden;
+    padding: 1.25rem;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 1;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; right: -10%; top: 10%;
+    width: 70%; height: 70%;
+    background: radial-gradient(circle, rgba(255, 45, 146, 0.35) 0%, transparent 70%);
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .nav {
+    position: relative;
+    z-index: 10;
+    max-width: 1280px;
+    margin: 0 auto 1.5rem;
+    background: rgba(250, 250, 255, 0.96);
+    border-radius: 999px;
+    padding: 0.7rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 32px rgba(13, 5, 36, 0.4);
+  }
+  .nav-menu { background: none; border: none; cursor: pointer; color: var(--pixl-purple); padding: 4px 8px; display: flex; }
+  .nav-menu svg { width: 22px; height: 22px; }
+  .nav-logo { font-family: 'Bowlby One', sans-serif; color: var(--pixl-purple); font-size: 26px; letter-spacing: 1px; }
+  .nav-cart { width: 38px; height: 38px; background: var(--pixl-purple); border-radius: 999px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; color: white; }
+  .nav-cart svg { width: 17px; height: 17px; }
+
+  .hero-grid {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 2rem;
+    align-items: center;
+    min-height: 78vh;
+  }
+
+  .hero-copy { padding: 1rem 0; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(212, 255, 58, 0.15);
+    color: var(--pixl-lime);
+    border: 1px solid rgba(212, 255, 58, 0.3);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .hero-eyebrow .dot { width: 6px; height: 6px; background: var(--pixl-lime); border-radius: 50%; }
+
+  .hero-title {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: clamp(2.75rem, 6vw, 4.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--pixl-white);
+    text-wrap: balance;
+    margin-bottom: 1.25rem;
+  }
+  .hero-title .pink { color: var(--pixl-magenta); }
+  .hero-title .lime { color: var(--pixl-lime); }
+
+  .hero-sub {
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: rgba(250, 250, 255, 0.78);
+    max-width: 38ch;
+    margin-bottom: 1.75rem;
+  }
+  .hero-sub strong { color: var(--pixl-white); font-weight: 700; }
+
+  .hero-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; }
+  .btn {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: var(--pixl-lime);
+    color: #1a1a1a;
+    box-shadow: 0 8px 24px rgba(212, 255, 58, 0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-ghost {
+    background: rgba(250, 250, 255, 0.08);
+    color: var(--pixl-white);
+    border: 1px solid rgba(250, 250, 255, 0.18);
+  }
+  .btn-ghost:hover { background: rgba(250, 250, 255, 0.14); }
+  .btn svg { width: 16px; height: 16px; }
+
+  .hero-bullets {
+    display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem;
+    color: rgba(250, 250, 255, 0.65);
+    font-size: 13px;
+  }
+  .hero-bullets span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-bullets svg { width: 14px; height: 14px; color: var(--pixl-lime); }
+
+  /* ===== CUBE STAGE ===== */
+  .cube-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #cube-canvas {
+    width: 100%; height: 100%;
+    cursor: grab;
+    touch-action: none;
+    display: block;
+  }
+  #cube-canvas.grabbing { cursor: grabbing; }
+
+  /* Top-right actions — icon-only round buttons */
+  .cube-actions {
+    position: absolute;
+    top: 14px; right: 14px;
+    display: flex; gap: 6px;
+    z-index: 4;
+  }
+  .action-btn {
+    width: 34px; height: 34px;
+    background: rgba(13, 5, 36, 0.7);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--pixl-white);
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.2s ease;
+  }
+  .action-btn:hover:not(:disabled) { transform: scale(1.08); }
+  .action-btn:active:not(:disabled) { transform: scale(0.94); }
+  .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .action-btn svg { width: 15px; height: 15px; }
+  .action-btn.hint-btn { border-color: rgba(255, 138, 26, 0.45); color: var(--pixl-orange); }
+  .action-btn.hint-btn:hover:not(:disabled) { background: var(--pixl-orange); border-color: var(--pixl-orange); color: #0d0524; }
+  .action-btn.solve-btn { border-color: rgba(61, 245, 255, 0.45); color: var(--pixl-cyan); }
+  .action-btn.solve-btn:hover:not(:disabled) { background: var(--pixl-cyan); border-color: var(--pixl-cyan); color: #0d0524; }
+  .action-btn#btn-scramble:hover:not(:disabled) { background: var(--pixl-magenta); border-color: var(--pixl-magenta); }
+
+  /* =====================================================
+     BOTTOM HUD — three states (hint / live / win)
+     ===================================================== */
+  .cube-hud {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .cube-hud > div {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    white-space: nowrap;
+  }
+  .cube-hud[data-state="hint"] .hud-hint,
+  .cube-hud[data-state="live"] .hud-live,
+  .cube-hud[data-state="win"]  .hud-win {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hud-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(250, 250, 255, 0.45);
+    letter-spacing: 0.2px;
+  }
+  .hud-hint svg { width: 11px; height: 11px; opacity: 0.7; }
+
+  .hud-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(13, 5, 36, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--pixl-white);
+    font-variant-numeric: tabular-nums;
+  }
+  .hud-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(250, 250, 255, 0.85);
+  }
+  .hud-stat svg { width: 13px; height: 13px; opacity: 0.8; }
+  .hud-stat b { font-weight: 800; color: var(--pixl-white); }
+  .hud-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(250, 250, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-left: 2px;
+  }
+  .hud-divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .hud-win {
+    background: rgba(13, 5, 36, 0.92);
+    border: 1px solid rgba(212, 255, 58, 0.55);
+    border-radius: 16px;
+    padding: 14px 18px;
+    box-shadow:
+      0 16px 48px rgba(212, 255, 58, 0.18),
+      0 0 0 1px rgba(212, 255, 58, 0.08) inset;
+    text-align: center;
+    min-width: 380px;
+  }
+  .hud-win-title {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--pixl-lime);
+    margin-bottom: 10px;
+  }
+  .hud-win-stats {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+  .win-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 10px;
+    min-width: 60px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .win-stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .win-stat-value {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    color: var(--pixl-white);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+  }
+  .win-stat-score {
+    background: linear-gradient(135deg, rgba(212, 255, 58, 0.18), rgba(255, 45, 146, 0.18));
+    border-color: rgba(212, 255, 58, 0.4);
+  }
+  .win-stat-score .win-stat-value { color: var(--pixl-lime); }
+
+  .hud-win-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pixl-lime);
+    color: #0d0524;
+    border: none;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 20px rgba(212, 255, 58, 0.3);
+  }
+  .hud-win-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212, 255, 58, 0.45); }
+  .hud-win-cta:active { transform: translateY(0); }
+  .hud-win-cta svg { width: 14px; height: 14px; }
+
+  .hint-pulse {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+    width: 30px; height: 30px;
+    border: 2px solid var(--pixl-lime);
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  .win-burst {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    overflow: hidden;
+  }
+  .win-burst .spark {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    opacity: 0;
+  }
+
+  @media (max-width: 900px) {
+    .hero { padding: 0.75rem; }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      min-height: 0;
+    }
+    .cube-stage {
+      order: 1;
+      max-height: none;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .hero-copy {
+      order: 2;
+      padding: 0.5rem 0.25rem 1rem;
+    }
+    .hero-title { font-size: clamp(2.25rem, 9vw, 3.5rem); }
+    .hero-sub { font-size: 1rem; }
+    .nav { margin-bottom: 0.75rem; }
+  }
+  @media (max-width: 480px) {
+    .nav { padding: 0.55rem 1rem; }
+    .nav-logo { font-size: 22px; }
+    .hero-cta-row .btn { padding: 13px 22px; font-size: 14px; }
+    .cube-stage { max-width: 100%; }
+    .hud-win { min-width: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <nav class="nav" aria-label="Main navigation">
+    <button class="nav-menu" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <div class="nav-logo">PIXL</div>
+    <button class="nav-cart" aria-label="Cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+    </button>
+  </nav>
+
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        New game · Live now
+      </div>
+      <h1 class="hero-title">
+        Twist it.<br>
+        <span class="pink">Solve it.</span><br>
+        <span class="lime">Win big.</span>
+      </h1>
+      <p class="hero-sub">
+        Crack the cube and unlock instant rewards — devices, merch, and <strong>£3 credit guaranteed</strong> for everyone who plays. No catch, no draw.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#play" class="btn btn-primary">
+          Claim my £3 credit
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how" class="btn btn-ghost">How it works</a>
+      </div>
+      <div class="hero-bullets">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Under 30 seconds</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everyone wins something</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> No spam, ever</span>
+      </div>
+    </div>
+
+    <div class="cube-stage" id="cube-stage">
+      <canvas id="cube-canvas"></canvas>
+      <div class="hint-pulse" id="hint-pulse"></div>
+      <div class="win-burst" id="win-burst" aria-hidden="true"></div>
+
+      <div class="cube-actions">
+        <button class="action-btn hint-btn" id="btn-hint" aria-label="Hint" title="Hint — auto-twists one move">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
+        </button>
+        <button class="action-btn solve-btn" id="btn-solve" aria-label="Auto-solve" title="Solve">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button class="action-btn" id="btn-scramble" aria-label="Scramble" title="Scramble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        </button>
+      </div>
+
+      <div class="cube-hud" id="cube-hud" data-state="hint">
+        <div class="hud-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74M7 11.24h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/></svg>
+          Drag a face to twist · Drag background to rotate
+        </div>
+        <div class="hud-live">
+          <span class="hud-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
+            <b id="hud-time">0:00</b>
+          </span>
+          <span class="hud-divider"></span>
+          <span class="hud-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+            <b id="hud-moves">0</b><span class="hud-stat-label">moves</span>
+          </span>
+          <span class="hud-divider"></span>
+          <span class="hud-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
+            <b id="hud-hints">0</b><span class="hud-stat-label">hints</span>
+          </span>
+        </div>
+        <div class="hud-win">
+          <div class="hud-win-title">Solved</div>
+          <div class="hud-win-stats">
+            <div class="win-stat">
+              <span class="win-stat-label">Time</span>
+              <span class="win-stat-value" id="win-time">0:00</span>
+            </div>
+            <div class="win-stat">
+              <span class="win-stat-label">Moves</span>
+              <span class="win-stat-value" id="win-moves">0</span>
+            </div>
+            <div class="win-stat">
+              <span class="win-stat-label">Hints</span>
+              <span class="win-stat-value" id="win-hints">0</span>
+            </div>
+            <div class="win-stat win-stat-score">
+              <span class="win-stat-label">Score</span>
+              <span class="win-stat-value" id="win-score">0</span>
+            </div>
+          </div>
+          <button class="hud-win-cta" id="btn-play-again">
+            Play again
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<script>
+(function () {
+  const canvas    = document.getElementById('cube-canvas');
+  const stage     = document.getElementById('cube-stage');
+  const hintPulse = document.getElementById('hint-pulse');
+  const winBurst  = document.getElementById('win-burst');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camera.position.set(5.8, 5.4, 7.2);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.95));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  keyLight.position.set(6, 9, 6);
+  scene.add(keyLight);
+  const fillLight = new THREE.DirectionalLight(0xffffff, 0.45);
+  fillLight.position.set(-6, 2, 4);
+  scene.add(fillLight);
+  const backLight = new THREE.DirectionalLight(0xffffff, 0.35);
+  backLight.position.set(-3, 4, -8);
+  scene.add(backLight);
+  const limeAccent = new THREE.PointLight(0xd4ff3a, 0.0, 16);
+  limeAccent.position.set(0, 3, 5);
+  scene.add(limeAccent);
+
+  // ==================== CUBE ====================
+  const STICKER = {
+    U: 0xffffff, D: 0xc8f23a, F: 0xff2d92,
+    B: 0x3df5ff, R: 0xff7a1a, L: 0x9d5cff,
+  };
+  const CUBIE_BODY = 0x120820;
+
+  const cubeGroup = new THREE.Group();
+  scene.add(cubeGroup);
+
+  const SIZE = 0.95;
+  const GAP  = 0.05;
+  const STEP = SIZE + GAP;
+
+  const bodyGeo = new THREE.BoxGeometry(SIZE, SIZE, SIZE);
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: CUBIE_BODY,
+    roughness: 0.78,
+    metalness: 0.0,
+    polygonOffset: true,
+    polygonOffsetFactor: 1,
+    polygonOffsetUnits: 1,
+  });
+
+  const STICKER_SIZE = SIZE * 0.86;
+  const stickerGeo = new THREE.PlaneGeometry(STICKER_SIZE, STICKER_SIZE);
+
+  function makeSticker(color, faceAxis, faceSign, homeKey) {
+    const mat = new THREE.MeshBasicMaterial({ color });
+    const mesh = new THREE.Mesh(stickerGeo, mat);
+    mesh.renderOrder = 1;
+    const offset = SIZE / 2 + 0.015;
+    if (faceAxis === 'x') {
+      mesh.position.x = faceSign * offset;
+      mesh.rotation.y = faceSign > 0 ? Math.PI / 2 : -Math.PI / 2;
+    } else if (faceAxis === 'y') {
+      mesh.position.y = faceSign * offset;
+      mesh.rotation.x = faceSign > 0 ? -Math.PI / 2 : Math.PI / 2;
+    } else {
+      mesh.position.z = faceSign * offset;
+      if (faceSign < 0) mesh.rotation.y = Math.PI;
+    }
+    mesh.userData.isSticker = true;
+    mesh.userData.stickerColor = color;
+    mesh.userData.homeFace = homeKey;
+    return mesh;
+  }
+
+  const cubies = [];
+  function makeCubie(gx, gy, gz) {
+    const cubie = new THREE.Group();
+    cubie.add(new THREE.Mesh(bodyGeo, bodyMat));
+    if (gx ===  1) cubie.add(makeSticker(STICKER.R, 'x',  1, 'R'));
+    if (gx === -1) cubie.add(makeSticker(STICKER.L, 'x', -1, 'L'));
+    if (gy ===  1) cubie.add(makeSticker(STICKER.U, 'y',  1, 'U'));
+    if (gy === -1) cubie.add(makeSticker(STICKER.D, 'y', -1, 'D'));
+    if (gz ===  1) cubie.add(makeSticker(STICKER.F, 'z',  1, 'F'));
+    if (gz === -1) cubie.add(makeSticker(STICKER.B, 'z', -1, 'B'));
+    cubie.position.set(gx * STEP, gy * STEP, gz * STEP);
+    cubie.userData.isCubie = true;
+    cubeGroup.add(cubie);
+    cubies.push(cubie);
+  }
+  for (let x = -1; x <= 1; x++)
+    for (let y = -1; y <= 1; y++)
+      for (let z = -1; z <= 1; z++)
+        makeCubie(x, y, z);
+
+  // ==================== TWIST CORE ====================
+  let isAnimating = false;
+  let isSolving   = false;
+  let isHinting   = false;
+  let moveHistory = [];
+
+  function getLayerCubies(axis, layer) {
+    return cubies.filter(c => Math.abs(c.position[axis] - layer * STEP) < 0.15);
+  }
+
+  function twistFace(face, direction = 1, duration = 0.38, logMove = true, isScrambleMove = false, isHintMove = false) {
+    if (isAnimating) return Promise.resolve();
+    const map = {
+      U: { axis: 'y', layer:  1, sign:  1 },
+      D: { axis: 'y', layer: -1, sign: -1 },
+      R: { axis: 'x', layer:  1, sign:  1 },
+      L: { axis: 'x', layer: -1, sign: -1 },
+      F: { axis: 'z', layer:  1, sign:  1 },
+      B: { axis: 'z', layer: -1, sign: -1 },
+    };
+    const m = map[face];
+    if (!m) return Promise.resolve();
+
+    isAnimating = true;
+    const layerCubies = getLayerCubies(m.axis, m.layer);
+    const pivot = new THREE.Group();
+    cubeGroup.add(pivot);
+    layerCubies.forEach(c => pivot.attach(c));
+
+    const target = (Math.PI / 2) * direction * m.sign;
+    const ease = duration < 0.25 ? 'power2.out' : 'back.out(1.3)';
+    return new Promise(resolve => {
+      const state = { v: 0 };
+      gsap.to(state, {
+        v: target,
+        duration,
+        ease,
+        onUpdate: () => { pivot.rotation[m.axis] = state.v; },
+        onComplete: () => {
+          pivot.rotation[m.axis] = target;
+          pivot.updateMatrixWorld(true);
+          [...pivot.children].forEach(c => cubeGroup.attach(c));
+          cubeGroup.remove(pivot);
+          layerCubies.forEach(c => {
+            c.position.set(
+              Math.round(c.position.x / STEP) * STEP,
+              Math.round(c.position.y / STEP) * STEP,
+              Math.round(c.position.z / STEP) * STEP
+            );
+          });
+          if (logMove) moveHistory.push({ face, direction });
+          const isUserMove = logMove && !isScrambleMove && !isSolving;
+          if (isUserMove) registerUserMove();
+          const solved = checkSolved();
+          if (!isSolving) {
+            if (solved && (isUserMove || isHintMove)) {
+              moveHistory = [];
+              triggerWin();
+            }
+          }
+          isAnimating = false;
+          updateCreditUI();
+          resolve();
+        }
+      });
+    });
+  }
+
+  function checkSolved() {
+    const facesToCheck = [
+      { axis: 'x', sign:  1 }, { axis: 'x', sign: -1 },
+      { axis: 'y', sign:  1 }, { axis: 'y', sign: -1 },
+      { axis: 'z', sign:  1 }, { axis: 'z', sign: -1 },
+    ];
+    const outward = new THREE.Vector3();
+    const tmpN = new THREE.Vector3();
+    for (const f of facesToCheck) {
+      const layerCubies = getLayerCubies(f.axis, f.sign);
+      outward.set(0, 0, 0);
+      outward[f.axis] = f.sign;
+      let ref = null;
+      for (const cubie of layerCubies) {
+        let bestDot = -Infinity, bestColor = null;
+        cubie.children.forEach(child => {
+          if (!child.userData.isSticker) return;
+          tmpN.set(0, 0, 1).applyQuaternion(child.quaternion);
+          tmpN.applyQuaternion(cubie.quaternion);
+          const d = tmpN.dot(outward);
+          if (d > bestDot) {
+            bestDot = d;
+            bestColor = child.userData.stickerColor;
+          }
+        });
+        if (bestColor === null) return false;
+        if (ref === null) ref = bestColor;
+        else if (bestColor !== ref) return false;
+      }
+    }
+    return true;
+  }
+
+  // ==================== GAME STATE + SCORING ====================
+  const hudEl       = document.getElementById('cube-hud');
+  const hudTimeEl   = document.getElementById('hud-time');
+  const hudMovesEl  = document.getElementById('hud-moves');
+  const hudHintsEl  = document.getElementById('hud-hints');
+  const winTimeEl   = document.getElementById('win-time');
+  const winMovesEl  = document.getElementById('win-moves');
+  const winHintsEl  = document.getElementById('win-hints');
+  const winScoreEl  = document.getElementById('win-score');
+  const btnPlayAgain = document.getElementById('btn-play-again');
+
+  let gameState  = 'idle';
+  let userMoves  = 0;
+  let userHints  = 0;
+  let startTime  = 0;
+  let elapsedMs  = 0;
+  let tickerFn   = null;
+
+  function setGameState(s) {
+    gameState = s;
+    hudEl.setAttribute('data-state',
+      s === 'playing' ? 'live' :
+      s === 'won'     ? 'win'  : 'hint');
+  }
+
+  function formatTime(ms) {
+    const total = Math.floor(ms / 1000);
+    const m = Math.floor(total / 60);
+    const sec = total % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  function computeScore(ms, moves, hints) {
+    const sec = ms / 1000;
+    let score = 1000;
+    if (sec <= 30) score += (30 - sec) * 6;
+    else           score -= (sec - 30) * 10;
+    if (moves <= 20) score += (20 - moves) * 18;
+    else             score -= (moves - 20) * 15;
+    score -= hints * 100;
+    return Math.max(100, Math.round(score));
+  }
+
+  function startTimer() {
+    startTime = performance.now();
+    elapsedMs = 0;
+    if (tickerFn) gsap.ticker.remove(tickerFn);
+    tickerFn = () => {
+      if (gameState !== 'playing') return;
+      elapsedMs = performance.now() - startTime;
+      hudTimeEl.textContent = formatTime(elapsedMs);
+    };
+    gsap.ticker.add(tickerFn);
+  }
+
+  function stopTimer() {
+    if (tickerFn) { gsap.ticker.remove(tickerFn); tickerFn = null; }
+  }
+
+  function registerUserMove() {
+    if (gameState === 'idle' || gameState === 'scrambling') {
+      setGameState('playing');
+      userMoves = 1;
+      startTimer();
+    } else if (gameState === 'playing') {
+      userMoves += 1;
+    }
+    hudMovesEl.textContent = userMoves;
+  }
+
+  function resetGameToIdle() {
+    stopTimer();
+    userMoves = 0;
+    userHints = 0;
+    elapsedMs = 0;
+    hudTimeEl.textContent = '0:00';
+    hudMovesEl.textContent = '0';
+    hudHintsEl.textContent = '0';
+    setGameState('idle');
+  }
+
+  // ==================== SCRAMBLE / SOLVE ====================
+  const FACES = ['U', 'D', 'L', 'R', 'F', 'B'];
+  async function scramble(steps = 16) {
+    if (isAnimating || isSolving || isHinting) return;
+    moveHistory = [];
+    resetGameToIdle();
+    setGameState('scrambling');
+    let lastFace = null;
+    for (let i = 0; i < steps; i++) {
+      let face = lastFace;
+      while (face === lastFace) face = FACES[Math.floor(Math.random() * 6)];
+      lastFace = face;
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      await twistFace(face, dir, 0.16, true, true);
+    }
+    setGameState('idle');
+    resetCredits();
+  }
+
+  async function solveCube() {
+    if (isAnimating || isSolving || isHinting) return;
+    if (moveHistory.length === 0) return;
+    isSolving = true;
+    stopTimer();
+    setGameState('idle');
+    const reversed = moveHistory.slice().reverse();
+    moveHistory = [];
+    for (const m of reversed) {
+      await twistFace(m.face, -m.direction, 0.22, false, false);
+    }
+    isSolving = false;
+    userMoves = 0;
+    userHints = 0;
+    elapsedMs = 0;
+    hudTimeEl.textContent = '0:00';
+    hudMovesEl.textContent = '0';
+    hudHintsEl.textContent = '0';
+    setGameState('idle');
+    updateCreditUI();
+  }
+
+  // ==================== WIN CELEBRATION ====================
+  function triggerWin() {
+    stopTimer();
+    const finalMs    = elapsedMs;
+    const finalMoves = userMoves;
+    const finalHints = userHints;
+    const finalScore = computeScore(finalMs, finalMoves, finalHints);
+
+    const tl = gsap.timeline();
+    tl.to(cubeGroup.scale, { x: 1.18, y: 1.18, z: 1.18, duration: 0.35, ease: 'back.out(2)' })
+      .to(cubeGroup.scale, { x: 1, y: 1, z: 1, duration: 0.7, ease: 'elastic.out(1, 0.35)' }, '>-0.08')
+      .to(limeAccent, { intensity: 3.5, duration: 0.35, ease: 'power2.out' }, 0)
+      .to(limeAccent, { intensity: 0, duration: 1.2, ease: 'power2.inOut' }, 0.4);
+
+    const startY = cubeGroup.rotation.y;
+    gsap.to(rotTarget, {
+      y: startY + Math.PI * 2.5,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: applyRotation,
+    });
+
+    sequenceFaceFlash();
+    fireWinBurst();
+
+    winTimeEl.textContent  = formatTime(finalMs);
+    winMovesEl.textContent = finalMoves;
+    winHintsEl.textContent = finalHints;
+    setTimeout(() => {
+      setGameState('won');
+      const scoreCounter = { v: 0 };
+      gsap.to(scoreCounter, {
+        v: finalScore,
+        duration: 1.0,
+        ease: 'power2.out',
+        onUpdate: () => { winScoreEl.textContent = Math.round(scoreCounter.v); },
+      });
+    }, 550);
+  }
+
+  function sequenceFaceFlash() {
+    const faceVectors = {
+      U: new THREE.Vector3( 0, 1, 0),
+      F: new THREE.Vector3( 0, 0, 1),
+      R: new THREE.Vector3( 1, 0, 0),
+      D: new THREE.Vector3( 0,-1, 0),
+      L: new THREE.Vector3(-1, 0, 0),
+      B: new THREE.Vector3( 0, 0,-1),
+    };
+    const order = ['U', 'F', 'R', 'D', 'L', 'B'];
+    const byFace = { U: [], F: [], R: [], D: [], L: [], B: [] };
+    const tmpN = new THREE.Vector3();
+    for (const cubie of cubies) {
+      for (const child of cubie.children) {
+        if (!child.userData.isSticker) continue;
+        tmpN.set(0, 0, 1).applyQuaternion(child.quaternion).applyQuaternion(cubie.quaternion);
+        let best = null, bestDot = -Infinity;
+        for (const [k, v] of Object.entries(faceVectors)) {
+          const d = tmpN.dot(v);
+          if (d > bestDot) { bestDot = d; best = k; }
+        }
+        if (best) byFace[best].push(child);
+      }
+    }
+    order.forEach((faceKey, i) => {
+      const stickers = byFace[faceKey];
+      stickers.forEach(s => {
+        const orig = s.userData.stickerColor;
+        const origCol = new THREE.Color(orig);
+        const target = new THREE.Color(0xffffff);
+        const proxy = { t: 0 };
+        gsap.timeline({ delay: 0.08 + i * 0.07 })
+          .to(proxy, {
+            t: 1, duration: 0.16, ease: 'power2.out',
+            onUpdate: () => s.material.color.copy(origCol).lerp(target, proxy.t),
+          })
+          .to(proxy, {
+            t: 0, duration: 0.4, ease: 'power2.inOut',
+            onUpdate: () => s.material.color.copy(origCol).lerp(target, proxy.t),
+            onComplete: () => s.material.color.setHex(orig),
+          });
+      });
+    });
+  }
+
+  function fireWinBurst() {
+    const colors = ['#d4ff3a', '#ff2d92', '#3df5ff', '#a78bfa', '#ff8a1a', '#ffffff'];
+    const count = 40;
+    winBurst.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const color = colors[i % colors.length];
+      const size = 4 + Math.random() * 8;
+      s.style.width = s.style.height = size + 'px';
+      s.style.background = color;
+      s.style.boxShadow = `0 0 ${size + 4}px ${color}`;
+      winBurst.appendChild(s);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 80 + Math.random() * 180;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 30;
+      const dur = 0.85 + Math.random() * 0.6;
+      gsap.fromTo(s,
+        { x: 0, y: 0, opacity: 1, scale: 0.5, rotation: 0 },
+        {
+          x: dx,
+          y: dy + 60,
+          opacity: 0,
+          scale: 0.1,
+          rotation: (Math.random() - 0.5) * 360,
+          duration: dur,
+          ease: 'power2.out',
+          onComplete: () => s.remove(),
+        }
+      );
+    }
+  }
+
+  // ==================== HINT + ACTION BUTTONS ====================
+  const btnHint      = document.getElementById('btn-hint');
+  const btnSolve     = document.getElementById('btn-solve');
+  const btnScramble  = document.getElementById('btn-scramble');
+
+  function updateCreditUI() {
+    const solved = checkSolved();
+    btnHint.disabled    = isAnimating || isSolving || isHinting || solved || moveHistory.length === 0;
+    btnSolve.disabled   = isAnimating || isSolving || isHinting || moveHistory.length === 0;
+    btnScramble.disabled = isAnimating || isSolving || isHinting;
+  }
+  function resetCredits() { updateCreditUI(); }
+
+  btnHint.addEventListener('click', () => {
+    if (btnHint.disabled) return;
+    gsap.fromTo(btnHint,
+      { scale: 1.15 },
+      { scale: 1, duration: 0.45, ease: 'elastic.out(1, 0.4)' }
+    );
+    useHint();
+  });
+  btnSolve.addEventListener('click', () => {
+    if (btnSolve.disabled) return;
+    solveCube();
+  });
+  btnScramble.addEventListener('click', () => {
+    if (btnScramble.disabled) return;
+    scramble(16);
+  });
+  btnPlayAgain.addEventListener('click', () => {
+    scramble(16);
+  });
+
+  function useHint() {
+    if (moveHistory.length === 0) return;
+    if (gameState === 'idle' || gameState === 'scrambling') {
+      setGameState('playing');
+      startTimer();
+    }
+    userHints++;
+    hudHintsEl.textContent = userHints;
+    const last = moveHistory.pop();
+    twistFace(last.face, -last.direction, 0.32, false, false, true);
+    updateCreditUI();
+  }
+
+  // ==================== ROTATION + POINTER ====================
+  const rotTarget = { x: -0.3, y: 0.5 };
+  cubeGroup.rotation.x = rotTarget.x;
+  cubeGroup.rotation.y = rotTarget.y;
+  const rotXTo = gsap.quickTo(cubeGroup.rotation, 'x', { duration: 0.28, ease: 'power3.out' });
+  const rotYTo = gsap.quickTo(cubeGroup.rotation, 'y', { duration: 0.28, ease: 'power3.out' });
+  function applyRotation() {
+    rotXTo(rotTarget.x);
+    rotYTo(rotTarget.y);
+  }
+
+  const raycaster = new THREE.Raycaster();
+  const pVec = new THREE.Vector2();
+  let pState = null;
+  let pinchState = null;
+
+  function getNDC(clientX, clientY) {
+    const r = canvas.getBoundingClientRect();
+    pVec.x = ((clientX - r.left) / r.width) * 2 - 1;
+    pVec.y = -((clientY - r.top) / r.height) * 2 + 1;
+  }
+
+  function raycastFace(clientX, clientY) {
+    getNDC(clientX, clientY);
+    raycaster.setFromCamera(pVec, camera);
+    const stickers = [];
+    cubies.forEach(c => c.children.forEach(ch => { if (ch.userData.isSticker) stickers.push(ch); }));
+    const hits = raycaster.intersectObjects(stickers, false);
+    if (!hits.length) return null;
+    const hit = hits[0];
+    const nLocal = new THREE.Vector3(0, 0, 1).applyQuaternion(hit.object.quaternion);
+    const nWorld = nLocal.clone().applyQuaternion(hit.object.parent.quaternion)
+      .applyQuaternion(cubeGroup.quaternion).normalize();
+    return {
+      cubie: hit.object.parent,
+      faceNormalWorld: nWorld,
+      point: hit.point.clone(),
+    };
+  }
+
+  function pointerDown(clientX, clientY, isTouch) {
+    if (isAnimating || isSolving || isHinting) return;
+    canvas.classList.add('grabbing');
+    const hit = raycastFace(clientX, clientY);
+    pState = {
+      startX: clientX, startY: clientY,
+      lastX:  clientX, lastY:  clientY,
+      isTouch, hit,
+      orbitting: !hit,
+      twistCommitted: false,
+    };
+  }
+
+  function pointerMove(clientX, clientY) {
+    if (!pState || isAnimating || isSolving || isHinting) return;
+    const dx = clientX - pState.lastX;
+    const dy = clientY - pState.lastY;
+    pState.lastX = clientX;
+    pState.lastY = clientY;
+
+    if (pState.orbitting) {
+      rotTarget.y += dx * 0.012;
+      rotTarget.x += dy * 0.012;
+      rotTarget.x = Math.max(-1.2, Math.min(1.2, rotTarget.x));
+      applyRotation();
+      return;
+    }
+    if (pState.twistCommitted) return;
+
+    const totalDx = clientX - pState.startX;
+    const totalDy = clientY - pState.startY;
+    if (Math.hypot(totalDx, totalDy) < 22) return;
+
+    const right = new THREE.Vector3();
+    const up    = new THREE.Vector3();
+    right.setFromMatrixColumn(camera.matrixWorld, 0);
+    up.setFromMatrixColumn(camera.matrixWorld, 1);
+    const dragWorld = new THREE.Vector3()
+      .addScaledVector(right, totalDx)
+      .addScaledVector(up, -totalDy)
+      .normalize();
+
+    const faceN = pState.hit.faceNormalWorld.clone();
+    const dragOnFace = dragWorld.clone().addScaledVector(faceN, -dragWorld.dot(faceN)).normalize();
+
+    const cubeRotInv = new THREE.Matrix4().copy(cubeGroup.matrixWorld).invert();
+    const faceNLocal = faceN.clone().transformDirection(cubeRotInv).normalize();
+    const absL = { x: Math.abs(faceNLocal.x), y: Math.abs(faceNLocal.y), z: Math.abs(faceNLocal.z) };
+    let faceAxis = 'x';
+    if (absL.y > absL.x && absL.y > absL.z) faceAxis = 'y';
+    else if (absL.z > absL.x && absL.z > absL.y) faceAxis = 'z';
+
+    const cubeWorld = cubeGroup.matrixWorld;
+    const axesW = [
+      { name: 'x', vec: new THREE.Vector3(1,0,0).transformDirection(cubeWorld) },
+      { name: 'y', vec: new THREE.Vector3(0,1,0).transformDirection(cubeWorld) },
+      { name: 'z', vec: new THREE.Vector3(0,0,1).transformDirection(cubeWorld) },
+    ];
+    let bestAxis = null, bestDot = -1, bestSign = 1;
+    for (const a of axesW) {
+      if (a.name === faceAxis) continue;
+      const d = a.vec.dot(dragOnFace);
+      if (Math.abs(d) > bestDot) {
+        bestDot = Math.abs(d);
+        bestAxis = a.name;
+        bestSign = d >= 0 ? 1 : -1;
+      }
+    }
+    const twistAxis = ['x','y','z'].find(n => n !== faceAxis && n !== bestAxis);
+
+    const cubieLocal = pState.hit.cubie.position;
+    const layer = Math.round(cubieLocal[twistAxis] / STEP);
+    if (layer === 0) { pState.twistCommitted = true; return; }
+
+    const faceNLocalSnap = new THREE.Vector3(
+      faceAxis === 'x' ? Math.sign(faceNLocal.x) : 0,
+      faceAxis === 'y' ? Math.sign(faceNLocal.y) : 0,
+      faceAxis === 'z' ? Math.sign(faceNLocal.z) : 0,
+    );
+    const dragAxisLocal = new THREE.Vector3(
+      bestAxis === 'x' ? bestSign : 0,
+      bestAxis === 'y' ? bestSign : 0,
+      bestAxis === 'z' ? bestSign : 0,
+    );
+    const rotAxisLocal = new THREE.Vector3().crossVectors(faceNLocalSnap, dragAxisLocal);
+    const worldDirection = rotAxisLocal[twistAxis] >= 0 ? 1 : -1;
+
+    const key = twistAxis + (layer > 0 ? '+' : '-');
+    const lookup = {
+      'x+': { face: 'R', sign:  1 },
+      'x-': { face: 'L', sign: -1 },
+      'y+': { face: 'U', sign:  1 },
+      'y-': { face: 'D', sign: -1 },
+      'z+': { face: 'F', sign:  1 },
+      'z-': { face: 'B', sign: -1 },
+    };
+    const entry = lookup[key];
+    if (!entry) { pState.twistCommitted = true; return; }
+
+    const faceDirection = worldDirection * entry.sign;
+    pState.twistCommitted = true;
+    twistFace(entry.face, faceDirection, 0.38, true);
+  }
+
+  function pointerUp() {
+    pState = null;
+    canvas.classList.remove('grabbing');
+  }
+
+  canvas.addEventListener('mousedown', e => { e.preventDefault(); pointerDown(e.clientX, e.clientY, false); });
+  window.addEventListener('mousemove',  e => pointerMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup',    pointerUp);
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      pState = null;
+      pinchState = {
+        lastMidX: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        lastMidY: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      };
+      return;
+    }
+    pointerDown(e.touches[0].clientX, e.touches[0].clientY, true);
+  }, { passive: false });
+
+  window.addEventListener('touchmove', e => {
+    if (!pState && !pinchState) return;
+    if (pinchState && e.touches.length === 2) {
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const dx = midX - pinchState.lastMidX;
+      const dy = midY - pinchState.lastMidY;
+      pinchState.lastMidX = midX;
+      pinchState.lastMidY = midY;
+      rotTarget.y += dx * 0.012;
+      rotTarget.x += dy * 0.012;
+      rotTarget.x = Math.max(-1.2, Math.min(1.2, rotTarget.x));
+      applyRotation();
+      e.preventDefault();
+      return;
+    }
+    if (pState) {
+      e.preventDefault();
+      pointerMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', e => {
+    if (e.touches.length === 0) {
+      pointerUp();
+      pinchState = null;
+    } else if (e.touches.length === 1 && pinchState) {
+      pinchState = null;
+      pointerDown(e.touches[0].clientX, e.touches[0].clientY, true);
+    }
+  });
+  window.addEventListener('touchcancel', () => { pointerUp(); pinchState = null; });
+
+  // ==================== RENDER LOOP + INTRO ====================
+  function tick() {
+    if (!pState && !pinchState && !isAnimating && !isSolving && !isHinting) {
+      rotTarget.y += 0.0015;
+      applyRotation();
+    }
+    renderer.render(scene, camera);
+  }
+  gsap.ticker.add(tick);
+
+  cubeGroup.scale.set(0, 0, 0);
+  gsap.to(cubeGroup.scale, {
+    x: 1, y: 1, z: 1,
+    duration: 0.9,
+    ease: 'back.out(1.4)',
+    delay: 0.15,
+  });
+
+  function showHintPulse() {
+    const r = canvas.getBoundingClientRect();
+    const stageR = stage.getBoundingClientRect();
+    const x = r.left + r.width * 0.5 - stageR.left - 15;
+    const y = r.top  + r.height * 0.5 - stageR.top  - 15;
+    hintPulse.style.left = x + 'px';
+    hintPulse.style.top  = y + 'px';
+    gsap.timeline()
+      .set(hintPulse, { scale: 0.4, opacity: 0.9 })
+      .to(hintPulse, { scale: 2.4, opacity: 0, duration: 1.1, ease: 'power2.out' })
+      .set(hintPulse, { scale: 0.4, opacity: 0.9 })
+      .to(hintPulse, { scale: 2.4, opacity: 0, duration: 1.1, ease: 'power2.out' });
+  }
+
+  setGameState('idle');
+  updateCreditUI();
+  setTimeout(() => scramble(12), 1400);
+  setTimeout(showHintPulse, 2900);
+})();
+</script>
+
+</body>
+</html>
