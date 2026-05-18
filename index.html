@@ -270,10 +270,50 @@
     white-space: nowrap;
   }
   .cube-hud[data-state="hint"] .hud-hint,
-  .cube-hud[data-state="live"] .hud-live,
   .cube-hud[data-state="win"]  .hud-win {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* Top-left live stats panel */
+  .cube-stats {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(13, 5, 36, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--pixl-white);
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+  }
+  .cube-stats[data-state="live"] {
+    opacity: 1;
+    visibility: visible;
+  }
+  .cube-stats .hud-stat svg { width: 12px; height: 12px; }
+  @media (max-width: 480px) {
+    .cube-stats {
+      font-size: 11px;
+      padding: 6px 11px;
+      gap: 9px;
+      top: 10px;
+      left: 10px;
+    }
+    .cube-stats .hud-stat-label { display: none; }
+    .cube-stats .hud-stat svg { width: 11px; height: 11px; }
+    .cube-stats .hud-divider { height: 11px; }
   }
 
   .hud-hint {
@@ -607,10 +647,10 @@
   .orbit-arrow--left  { left: 4%;  top: 50%; transform: translateY(-50%); }
   .orbit-arrow--right { right: 4%; top: 50%; transform: translateY(-50%) rotate(180deg); }
   .orbit-arrow--up    { top: 64px; left: 50%; transform: translateX(-50%) rotate(90deg); }
-  .orbit-arrow--down  { bottom: 72px; left: 50%; transform: translateX(-50%) rotate(-90deg); }
+  .orbit-arrow--down  { bottom: 18px; left: 50%; transform: translateX(-50%) rotate(-90deg); }
   .orbit-hint-label {
     position: absolute;
-    bottom: 96px;
+    bottom: 46px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 10px;
@@ -1133,34 +1173,29 @@
         <button class="action-btn hint-btn" id="btn-hint" aria-label="Hint" title="Hint — auto-twists one move">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
         </button>
-        <button class="action-btn solve-btn" id="btn-solve" aria-label="Auto-solve" title="Solve">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        </button>
-        <button class="action-btn" id="btn-scramble" aria-label="Scramble" title="Scramble">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-        </button>
+      </div>
+
+      <div class="cube-stats" id="cube-stats" data-state="hint">
+        <span class="hud-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
+          <b id="hud-time">0:00</b>
+        </span>
+        <span class="hud-divider"></span>
+        <span class="hud-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+          <b id="hud-moves">0</b><span class="hud-stat-label">moves</span>
+        </span>
+        <span class="hud-divider"></span>
+        <span class="hud-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
+          <b id="hud-hints">0</b><span class="hud-stat-label">hints</span>
+        </span>
       </div>
 
       <div class="cube-hud" id="cube-hud" data-state="hint">
         <div class="hud-hint">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74M7 11.24h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/></svg>
           Drag a face to twist · Drag background to rotate
-        </div>
-        <div class="hud-live">
-          <span class="hud-stat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
-            <b id="hud-time">0:00</b>
-          </span>
-          <span class="hud-divider"></span>
-          <span class="hud-stat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
-            <b id="hud-moves">0</b><span class="hud-stat-label">moves</span>
-          </span>
-          <span class="hud-divider"></span>
-          <span class="hud-stat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
-            <b id="hud-hints">0</b><span class="hud-stat-label">hints</span>
-          </span>
         </div>
         <div class="hud-win">
           <div class="hud-win-title">Solved</div>
@@ -1412,6 +1447,7 @@
 
   // ==================== GAME STATE + SCORING ====================
   const hudEl       = document.getElementById('cube-hud');
+  const cubeStatsEl = document.getElementById('cube-stats');
   const hudTimeEl   = document.getElementById('hud-time');
   const hudMovesEl  = document.getElementById('hud-moves');
   const hudHintsEl  = document.getElementById('hud-hints');
@@ -1430,9 +1466,9 @@
 
   function setGameState(s) {
     gameState = s;
-    hudEl.setAttribute('data-state',
-      s === 'playing' ? 'live' :
-      s === 'won'     ? 'win'  : 'hint');
+    const ds = s === 'playing' ? 'live' : s === 'won' ? 'win' : 'hint';
+    hudEl.setAttribute('data-state', ds);
+    cubeStatsEl.setAttribute('data-state', ds);
   }
 
   function formatTime(ms) {
@@ -1668,15 +1704,11 @@
   }
 
   // ==================== HINT + ACTION BUTTONS ====================
-  const btnHint      = document.getElementById('btn-hint');
-  const btnSolve     = document.getElementById('btn-solve');
-  const btnScramble  = document.getElementById('btn-scramble');
+  const btnHint = document.getElementById('btn-hint');
 
   function updateCreditUI() {
     const solved = checkSolved();
-    btnHint.disabled    = isAnimating || isSolving || isHinting || solved || moveHistory.length === 0;
-    btnSolve.disabled   = isAnimating || isSolving || isHinting || moveHistory.length === 0;
-    btnScramble.disabled = isAnimating || isSolving || isHinting;
+    btnHint.disabled = isAnimating || isSolving || isHinting || solved || moveHistory.length === 0;
   }
   function resetCredits() { updateCreditUI(); }
 
@@ -1688,14 +1720,6 @@
       { scale: 1, duration: 0.45, ease: 'elastic.out(1, 0.4)' }
     );
     useHint();
-  });
-  btnSolve.addEventListener('click', () => {
-    if (btnSolve.disabled) return;
-    solveCube();
-  });
-  btnScramble.addEventListener('click', () => {
-    if (btnScramble.disabled) return;
-    scramble(16);
   });
   btnPlayAgain.addEventListener('click', () => {
     scramble(16);
