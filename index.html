@@ -777,9 +777,225 @@
     .rules-text b { font-size: 13.5px; }
     .rules-text span { font-size: 12.5px; }
   }
+
+  /* ===================================================
+     LEADERBOARD MODAL
+     =================================================== */
+  .leaderboard-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(13, 5, 36, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+  }
+  .leaderboard-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(45, 20, 102, 0.96), rgba(13, 5, 36, 0.96));
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    border-radius: 22px;
+    padding: 1.75rem 1.25rem 1.25rem;
+    max-width: 460px;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 80px rgba(13, 5, 36, 0.55), 0 0 0 1px rgba(167, 139, 250, 0.1) inset;
+    text-align: center;
+  }
+  .leaderboard-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    width: 32px; height: 32px;
+    border-radius: 999px;
+    color: var(--pixl-white);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .leaderboard-close:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+  .leaderboard-close svg { width: 14px; height: 14px; }
+  .leaderboard-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--pixl-lime);
+    background: rgba(212, 255, 58, 0.12);
+    border: 1px solid rgba(212, 255, 58, 0.3);
+    padding: 5px 12px; border-radius: 999px;
+    margin-bottom: 0.85rem;
+    align-self: center;
+  }
+  .leaderboard-eyebrow .dot {
+    width: 6px; height: 6px;
+    background: var(--pixl-lime);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--pixl-lime);
+  }
+  .leaderboard-title {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--pixl-white);
+    margin-bottom: 1.25rem;
+  }
+  .leaderboard-list {
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+    text-align: left;
+  }
+  .leaderboard-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+  }
+  .leaderboard-row.is-you {
+    background: linear-gradient(135deg, rgba(212, 255, 58, 0.15), rgba(255, 45, 146, 0.15));
+    border-color: rgba(212, 255, 58, 0.5);
+    box-shadow: 0 0 0 1px rgba(212, 255, 58, 0.15);
+  }
+  .leaderboard-rank {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .leaderboard-row.is-rank-1 .leaderboard-rank { color: #ffd84d; }
+  .leaderboard-row.is-rank-2 .leaderboard-rank { color: #d8d8e0; }
+  .leaderboard-row.is-rank-3 .leaderboard-rank { color: #ffb070; }
+  .leaderboard-row.is-you .leaderboard-rank { color: var(--pixl-lime); }
+  .leaderboard-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .leaderboard-name {
+    color: var(--pixl-white);
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .leaderboard-row.is-you .leaderboard-name { color: var(--pixl-lime); }
+  .leaderboard-meta {
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    display: flex; gap: 0;
+    flex-wrap: wrap;
+  }
+  .leaderboard-meta span + span::before {
+    content: '·';
+    margin: 0 6px;
+    opacity: 0.5;
+  }
+  .leaderboard-score {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 17px;
+    color: var(--pixl-purple-light);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+  }
+  .leaderboard-row.is-you .leaderboard-score { color: var(--pixl-lime); }
+  .leaderboard-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .leaderboard-cta {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--pixl-lime);
+    color: #0d0524;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    padding: 13px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 28px rgba(212, 255, 58, 0.3);
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .leaderboard-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(212, 255, 58, 0.5); }
+  .leaderboard-cta:active { transform: scale(0.97); }
+  .leaderboard-cta svg { width: 14px; height: 14px; }
+  .leaderboard-cta.secondary {
+    background: rgba(255,255,255,0.06);
+    color: var(--pixl-white);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: none;
+  }
+  .leaderboard-cta.secondary:hover { background: rgba(255,255,255,0.14); }
+  @media (max-width: 480px) {
+    .leaderboard-card { padding: 1.5rem 1rem 1rem; }
+    .leaderboard-row { padding: 9px 12px; }
+    .leaderboard-name { font-size: 13px; }
+    .leaderboard-score { font-size: 15px; }
+    .leaderboard-meta { font-size: 10.5px; }
+  }
+
+  /* Win HUD actions row */
+  .hud-win-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .hud-win-cta.secondary {
+    background: rgba(255,255,255,0.08);
+    color: var(--pixl-white);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: none;
+    padding: 9px 16px;
+  }
+  .hud-win-cta.secondary:hover { background: rgba(255,255,255,0.16); box-shadow: none; }
+  .hud-win-cta.secondary svg { width: 13px; height: 13px; opacity: 0.85; }
 </style>
 </head>
 <body>
+
+<div class="leaderboard-modal" id="leaderboard-modal" role="dialog" aria-labelledby="leaderboard-title" aria-modal="true">
+  <div class="leaderboard-card">
+    <button class="leaderboard-close" id="leaderboard-close" aria-label="Close" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="leaderboard-eyebrow">
+      <span class="dot"></span>
+      <span>Round results</span>
+    </div>
+    <h2 class="leaderboard-title" id="leaderboard-title">Top of the cube</h2>
+    <div class="leaderboard-list" id="leaderboard-list" role="list"></div>
+    <div class="leaderboard-actions">
+      <button class="leaderboard-cta secondary" id="leaderboard-back" type="button">Back</button>
+      <button class="leaderboard-cta" id="leaderboard-play-again" type="button">
+        Play again
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="rules-modal" id="rules-modal" role="dialog" aria-labelledby="rules-title" aria-modal="true">
   <div class="rules-card">
@@ -875,7 +1091,7 @@
           Claim my £3 credit
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
-        <a href="#how" class="btn btn-ghost">How it works</a>
+        <button type="button" class="btn btn-ghost" id="btn-how-it-works">How it works</button>
       </div>
       <div class="hero-bullets">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Under 30 seconds</span>
@@ -960,10 +1176,16 @@
               <span class="win-stat-value" id="win-score">0</span>
             </div>
           </div>
-          <button class="hud-win-cta" id="btn-play-again">
-            Play again
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          </button>
+          <div class="hud-win-actions">
+            <button class="hud-win-cta secondary" id="btn-leaderboard" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M5 4h14v6a7 7 0 0 1-14 0V4z M5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3"/></svg>
+              Leaderboard
+            </button>
+            <button class="hud-win-cta" id="btn-play-again" type="button">
+              Play again
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1262,7 +1484,6 @@
     hudHintsEl.textContent = '0';
     setGameState('idle');
     hintPopupShown = false;
-    hintPopupDismissed = false;
     hideHintPopup(false);
   }
 
@@ -1284,8 +1505,10 @@
     setGameState('idle');
     resetCredits();
     setTimeout(() => {
-      if (gameState === 'idle') maybeShowHintPopup();
-    }, 900);
+      if (gameState !== 'idle') return;
+      if (!rulesModalShown) showRulesModal();
+      else maybeShowHintPopup();
+    }, 700);
   }
 
   async function solveCube() {
@@ -1311,6 +1534,8 @@
   }
 
   // ==================== WIN CELEBRATION ====================
+  let lastWin = { time: '0:00', moves: 0, hints: 0, score: 0 };
+
   function triggerWin() {
     stopTimer();
     hideHintPopup(true);
@@ -1318,6 +1543,12 @@
     const finalMoves = userMoves;
     const finalHints = userHints;
     const finalScore = computeScore(finalMs, finalMoves, finalHints);
+    lastWin = {
+      time: formatTime(finalMs),
+      moves: finalMoves,
+      hints: finalHints,
+      score: finalScore,
+    };
 
     const tl = gsap.timeline();
     tl.to(cubeGroup.scale, { x: 1.18, y: 1.18, z: 1.18, duration: 0.35, ease: 'back.out(2)' })
@@ -1481,8 +1712,8 @@
   const rotTarget = { x: -0.3, y: 0.5 };
   cubeGroup.rotation.x = rotTarget.x;
   cubeGroup.rotation.y = rotTarget.y;
-  const rotXTo = gsap.quickTo(cubeGroup.rotation, 'x', { duration: 0.12, ease: 'power2.out' });
-  const rotYTo = gsap.quickTo(cubeGroup.rotation, 'y', { duration: 0.12, ease: 'power2.out' });
+  const rotXTo = gsap.quickTo(cubeGroup.rotation, 'x', { duration: 0.08, ease: 'power2.out' });
+  const rotYTo = gsap.quickTo(cubeGroup.rotation, 'y', { duration: 0.08, ease: 'power2.out' });
   function applyRotation() {
     rotXTo(rotTarget.x);
     rotYTo(rotTarget.y);
@@ -1538,7 +1769,7 @@
     pState.lastY = clientY;
 
     if (pState.orbitting) {
-      const sensitivity = pState.isTouch ? 0.022 : 0.014;
+      const sensitivity = pState.isTouch ? 0.024 : 0.022;
       rotTarget.y += dx * sensitivity;
       rotTarget.x += dy * sensitivity;
       rotTarget.x = Math.max(-1.2, Math.min(1.2, rotTarget.x));
@@ -1744,9 +1975,10 @@
   let rulesModalShown = false;
 
   function showRulesModal() {
-    if (rulesModalShown) return;
+    if (rulesModalActive) return;
     rulesModalShown = true;
     rulesModalActive = true;
+    rulesModal.style.visibility = '';
     const card = rulesModal.querySelector('.rules-card');
     const items = rulesModal.querySelectorAll('.rules-list li');
     gsap.set(rulesModal, { autoAlpha: 0 });
@@ -1775,6 +2007,107 @@
   rulesCta.addEventListener('click', hideRulesModal);
   rulesModal.addEventListener('click', (e) => {
     if (e.target === rulesModal) hideRulesModal();
+  });
+  document.getElementById('btn-how-it-works').addEventListener('click', () => {
+    showRulesModal();
+  });
+
+  // ==================== LEADERBOARD MODAL ====================
+  const FAKE_LEADERBOARD = [
+    { name: 'Leon S.',   score: 3580, time: '0:24', moves: 22, hints: 0 },
+    { name: 'Ali B.',    score: 2890, time: '0:38', moves: 28, hints: 0 },
+    { name: 'River T.',  score: 2760, time: '0:45', moves: 31, hints: 1 },
+    { name: 'Skylar G.', score: 2510, time: '0:52', moves: 34, hints: 1 },
+    { name: 'Rowan L.',  score: 2390, time: '1:01', moves: 36, hints: 1 },
+    { name: 'Micah J.',  score: 2150, time: '1:14', moves: 38, hints: 2 },
+    { name: 'Quinn A.',  score: 1920, time: '1:22', moves: 41, hints: 2 },
+    { name: 'Riley M.',  score: 1780, time: '1:35', moves: 44, hints: 2 },
+    { name: 'Avery Z.',  score: 1540, time: '1:48', moves: 48, hints: 3 },
+  ];
+
+  const leaderboardModal = document.getElementById('leaderboard-modal');
+  const leaderboardList = document.getElementById('leaderboard-list');
+  const leaderboardClose = document.getElementById('leaderboard-close');
+  const leaderboardBack = document.getElementById('leaderboard-back');
+  const leaderboardPlayAgain = document.getElementById('leaderboard-play-again');
+  const btnLeaderboard = document.getElementById('btn-leaderboard');
+  let leaderboardActive = false;
+
+  function buildLeaderboard() {
+    const entries = FAKE_LEADERBOARD.map(e => ({ ...e, isYou: false }));
+    entries.push({
+      name: 'You',
+      score: lastWin.score,
+      time: lastWin.time,
+      moves: lastWin.moves,
+      hints: lastWin.hints,
+      isYou: true,
+    });
+    entries.sort((a, b) => b.score - a.score);
+    const top10 = entries.slice(0, 10);
+    leaderboardList.innerHTML = top10.map((e, i) => {
+      const rank = i + 1;
+      const cls = [
+        'leaderboard-row',
+        e.isYou ? 'is-you' : '',
+        rank <= 3 ? `is-rank-${rank}` : '',
+      ].filter(Boolean).join(' ');
+      const hintLabel = e.hints === 1 ? 'hint' : 'hints';
+      return `
+        <div class="${cls}" role="listitem">
+          <span class="leaderboard-rank">${rank}</span>
+          <div class="leaderboard-info">
+            <span class="leaderboard-name">${e.name}${e.isYou ? ' (You)' : ''}</span>
+            <span class="leaderboard-meta">
+              <span>${e.time}</span>
+              <span>${e.moves} moves</span>
+              <span>${e.hints} ${hintLabel}</span>
+            </span>
+          </div>
+          <span class="leaderboard-score">${e.score}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function showLeaderboard() {
+    if (leaderboardActive) return;
+    leaderboardActive = true;
+    buildLeaderboard();
+    leaderboardModal.style.visibility = '';
+    const card = leaderboardModal.querySelector('.leaderboard-card');
+    const rows = leaderboardList.querySelectorAll('.leaderboard-row');
+    gsap.set(leaderboardModal, { autoAlpha: 0 });
+    gsap.set(card, { y: 30, scale: 0.94, autoAlpha: 0 });
+    gsap.set(rows, { autoAlpha: 0, x: -10 });
+    gsap.timeline()
+      .to(leaderboardModal, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
+      .to(card, { y: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: 'back.out(1.4)' }, '-=0.1')
+      .to(rows, { autoAlpha: 1, x: 0, duration: 0.32, stagger: 0.04, ease: 'power2.out' }, '-=0.2');
+    const you = leaderboardList.querySelector('.is-you');
+    if (you) setTimeout(() => you.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 600);
+  }
+
+  function hideLeaderboard() {
+    if (!leaderboardActive) return;
+    leaderboardActive = false;
+    const card = leaderboardModal.querySelector('.leaderboard-card');
+    gsap.timeline({
+      onComplete: () => { leaderboardModal.style.visibility = 'hidden'; }
+    })
+      .to(card, { scale: 0.95, autoAlpha: 0, duration: 0.25, ease: 'power2.in' })
+      .to(leaderboardModal, { autoAlpha: 0, duration: 0.25, ease: 'power2.inOut' }, '-=0.1');
+  }
+
+  btnLeaderboard.addEventListener('click', showLeaderboard);
+  leaderboardClose.addEventListener('click', hideLeaderboard);
+  leaderboardBack.addEventListener('click', hideLeaderboard);
+  leaderboardPlayAgain.addEventListener('click', () => {
+    hideLeaderboard();
+    setTimeout(() => scramble(16), 200);
+  });
+  leaderboardModal.addEventListener('click', (e) => {
+    if (e.target === leaderboardModal) hideLeaderboard();
   });
 
   // ==================== ORBIT ARROW PULSE ====================
@@ -1822,7 +2155,6 @@
       ease: 'back.out(1.4)',
     });
     setTimeout(() => scramble(12), 550);
-    setTimeout(showRulesModal, 950);
   }
 
   const introMM = gsap.matchMedia();
@@ -1878,6 +2210,11 @@
     if (!introDismissed && (e.key === 'Escape' || e.key === 'Enter')) {
       e.preventDefault();
       dismissIntro();
+      return;
+    }
+    if (leaderboardActive && e.key === 'Escape') {
+      e.preventDefault();
+      hideLeaderboard();
       return;
     }
     if (rulesModalActive && (e.key === 'Escape' || e.key === 'Enter')) {
