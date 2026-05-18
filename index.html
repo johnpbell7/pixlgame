@@ -1204,11 +1204,6 @@
         </button>
         <button type="button" class="btn btn-ghost" id="btn-how-it-works">How it works</button>
       </div>
-      <div class="hero-bullets">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Under 30 seconds</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everyone wins something</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> No spam, ever</span>
-      </div>
     </div>
 
     <div class="cube-stage" id="cube-stage">
@@ -1256,7 +1251,7 @@
         <span class="hud-divider"></span>
         <span class="hud-stat">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-          <b id="hud-distance">—</b><span class="hud-stat-label">off</span>
+          <b id="hud-distance">—</b><span class="hud-stat-label">left</span>
         </span>
       </div>
 
@@ -1512,7 +1507,9 @@
   }
   function updateDistance() {
     if (!hudDistanceEl) return;
-    hudDistanceEl.textContent = countMismatches();
+    const mismatches = countMismatches();
+    const approxMoves = mismatches === 0 ? 0 : Math.max(1, Math.ceil(mismatches / 4));
+    hudDistanceEl.textContent = approxMoves;
   }
 
   function checkSolved() {
