@@ -146,6 +146,7 @@
   }
   .hero-title .pink { color: var(--pixl-magenta); }
   .hero-title .lime { color: var(--pixl-lime); }
+  .hero-line { display: block; }
 
   .hero-sub {
     font-size: 1.0625rem;
@@ -444,9 +445,13 @@
     .hero-copy {
       order: 2;
       padding: 0.5rem 0.25rem 1rem;
+      text-align: center;
     }
-    .hero-title { font-size: clamp(2.25rem, 9vw, 3.5rem); }
-    .hero-sub { font-size: 1rem; }
+    .hero-title { font-size: clamp(1.75rem, 6.5vw, 2.75rem); }
+    .hero-line.line-1, .hero-line.line-2 { display: inline; }
+    .hero-sub { font-size: 1rem; margin-left: auto; margin-right: auto; }
+    .hero-cta-row { justify-content: center; }
+    .hero-bullets { justify-content: center; }
     .nav { margin-bottom: 0.75rem; }
   }
   @media (max-width: 480px) {
@@ -699,9 +704,7 @@
         New game · Live now
       </div>
       <h1 class="hero-title">
-        Twist it.<br>
-        <span class="pink">Solve it.</span><br>
-        <span class="lime">Win big.</span>
+        <span class="hero-line line-1">Twist it.</span> <span class="hero-line line-2 pink">Solve it.</span> <span class="hero-line line-3 lime">Win big.</span>
       </h1>
       <p class="hero-sub">
         Crack the cube and unlock instant rewards — devices, merch, and <strong>£3 credit guaranteed</strong> for everyone who plays. No catch, no draw.
@@ -1086,7 +1089,6 @@
       userMoves += 1;
     }
     hudMovesEl.textContent = userMoves;
-    maybeShowHintPopup();
   }
 
   function resetGameToIdle() {
@@ -1120,6 +1122,9 @@
     }
     setGameState('idle');
     resetCredits();
+    setTimeout(() => {
+      if (gameState === 'idle') maybeShowHintPopup();
+    }, 900);
   }
 
   async function solveCube() {
@@ -1541,14 +1546,14 @@
 
   // ==================== HINT POPUP ====================
   const hintPopup = document.getElementById('hint-popup');
-  const HINT_POPUP_AFTER_MOVES = 3;
   let hintPopupShown = false;
   let hintPopupDismissed = false;
   let hintPopupFloatTween = null;
+  let hintPopupAutoTimer = null;
+  const HINT_POPUP_AUTO_HIDE_MS = 6500;
 
   function maybeShowHintPopup() {
     if (hintPopupShown || hintPopupDismissed) return;
-    if (userMoves < HINT_POPUP_AFTER_MOVES) return;
     if (checkSolved()) return;
     hintPopupShown = true;
     gsap.fromTo(hintPopup,
@@ -1559,8 +1564,11 @@
       y: -4, duration: 1.0, yoyo: true, repeat: -1,
       ease: 'sine.inOut', delay: 0.5,
     });
+    clearTimeout(hintPopupAutoTimer);
+    hintPopupAutoTimer = setTimeout(() => hideHintPopup(true), HINT_POPUP_AUTO_HIDE_MS);
   }
   function hideHintPopup(permanent) {
+    if (hintPopupAutoTimer) { clearTimeout(hintPopupAutoTimer); hintPopupAutoTimer = null; }
     if (hintPopupFloatTween) { hintPopupFloatTween.kill(); hintPopupFloatTween = null; }
     gsap.to(hintPopup, { autoAlpha: 0, y: -8, scale: 0.9, duration: 0.25, ease: 'power2.in' });
     if (permanent) hintPopupDismissed = true;
