@@ -681,7 +681,6 @@
     border-top: 3px solid var(--pixl-orange);
     border-left: 3px solid var(--pixl-orange);
     border-top-left-radius: 14px;
-    filter: drop-shadow(0 0 8px rgba(255, 138, 26, 0.4));
   }
   .cube-corner--tr {
     top: 10px;
@@ -689,7 +688,6 @@
     border-top: 3px solid var(--pixl-orange);
     border-right: 3px solid var(--pixl-orange);
     border-top-right-radius: 14px;
-    filter: drop-shadow(0 0 8px rgba(255, 138, 26, 0.4));
   }
   .cube-corner--bl {
     bottom: 10px;
@@ -697,7 +695,6 @@
     border-bottom: 3px solid var(--pixl-lime);
     border-left: 3px solid var(--pixl-lime);
     border-bottom-left-radius: 14px;
-    filter: drop-shadow(0 0 8px rgba(212, 255, 58, 0.4));
   }
   .cube-corner--br {
     bottom: 10px;
@@ -705,7 +702,6 @@
     border-bottom: 3px solid var(--pixl-lime);
     border-right: 3px solid var(--pixl-lime);
     border-bottom-right-radius: 14px;
-    filter: drop-shadow(0 0 8px rgba(212, 255, 58, 0.4));
   }
   @media (max-width: 480px) {
     .cube-corner { width: 34px; height: 34px; }
@@ -1257,6 +1253,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
           <b id="hud-hints">0</b><span class="hud-stat-label">hints</span>
         </span>
+        <span class="hud-divider"></span>
+        <span class="hud-stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          <b id="hud-distance">—</b><span class="hud-stat-label">off</span>
+        </span>
       </div>
 
       <div class="cube-hud" id="cube-hud" data-state="hint">
@@ -1473,10 +1474,45 @@
           }
           isAnimating = false;
           updateCreditUI();
+          updateDistance();
           resolve();
         }
       });
     });
+  }
+
+  const HOME_COLORS = {
+    U: STICKER.U, D: STICKER.D, F: STICKER.F,
+    B: STICKER.B, R: STICKER.R, L: STICKER.L,
+  };
+  const FACE_VECTORS = {
+    U: new THREE.Vector3(0, 1, 0),  D: new THREE.Vector3(0, -1, 0),
+    F: new THREE.Vector3(0, 0, 1),  B: new THREE.Vector3(0, 0, -1),
+    R: new THREE.Vector3(1, 0, 0),  L: new THREE.Vector3(-1, 0, 0),
+  };
+  function countMismatches() {
+    const tmpN = new THREE.Vector3();
+    let mismatches = 0;
+    for (const cubie of cubies) {
+      for (const child of cubie.children) {
+        if (!child.userData.isSticker) continue;
+        tmpN.set(0, 0, 1).applyQuaternion(child.quaternion);
+        tmpN.applyQuaternion(cubie.quaternion);
+        let bestFace = null, bestDot = -Infinity;
+        for (const [face, vec] of Object.entries(FACE_VECTORS)) {
+          const d = tmpN.dot(vec);
+          if (d > bestDot) { bestDot = d; bestFace = face; }
+        }
+        if (child.userData.stickerColor !== HOME_COLORS[bestFace]) {
+          mismatches++;
+        }
+      }
+    }
+    return mismatches;
+  }
+  function updateDistance() {
+    if (!hudDistanceEl) return;
+    hudDistanceEl.textContent = countMismatches();
   }
 
   function checkSolved() {
@@ -1515,9 +1551,10 @@
   // ==================== GAME STATE + SCORING ====================
   const hudEl       = document.getElementById('cube-hud');
   const cubeStatsEl = document.getElementById('cube-stats');
-  const hudTimeEl   = document.getElementById('hud-time');
-  const hudMovesEl  = document.getElementById('hud-moves');
-  const hudHintsEl  = document.getElementById('hud-hints');
+  const hudTimeEl     = document.getElementById('hud-time');
+  const hudMovesEl    = document.getElementById('hud-moves');
+  const hudHintsEl    = document.getElementById('hud-hints');
+  const hudDistanceEl = document.getElementById('hud-distance');
   const winTimeEl   = document.getElementById('win-time');
   const winMovesEl  = document.getElementById('win-moves');
   const winHintsEl  = document.getElementById('win-hints');
