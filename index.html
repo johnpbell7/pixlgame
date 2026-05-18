@@ -666,6 +666,54 @@
   .orbit-arrow svg { width: 100%; height: 100%; display: block; }
   .orbit-arrow--left  { left: 4%;  top: 50%; transform: translateY(-50%); }
   .orbit-arrow--right { right: 4%; top: 50%; transform: translateY(-50%) rotate(180deg); }
+  .cube-corner {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    pointer-events: none;
+    z-index: 2;
+    box-sizing: border-box;
+    opacity: 0.85;
+  }
+  .cube-corner--tl {
+    top: 10px;
+    left: 10px;
+    border-top: 3px solid var(--pixl-orange);
+    border-left: 3px solid var(--pixl-orange);
+    border-top-left-radius: 14px;
+    filter: drop-shadow(0 0 8px rgba(255, 138, 26, 0.4));
+  }
+  .cube-corner--tr {
+    top: 10px;
+    right: 10px;
+    border-top: 3px solid var(--pixl-orange);
+    border-right: 3px solid var(--pixl-orange);
+    border-top-right-radius: 14px;
+    filter: drop-shadow(0 0 8px rgba(255, 138, 26, 0.4));
+  }
+  .cube-corner--bl {
+    bottom: 10px;
+    left: 10px;
+    border-bottom: 3px solid var(--pixl-lime);
+    border-left: 3px solid var(--pixl-lime);
+    border-bottom-left-radius: 14px;
+    filter: drop-shadow(0 0 8px rgba(212, 255, 58, 0.4));
+  }
+  .cube-corner--br {
+    bottom: 10px;
+    right: 10px;
+    border-bottom: 3px solid var(--pixl-lime);
+    border-right: 3px solid var(--pixl-lime);
+    border-bottom-right-radius: 14px;
+    filter: drop-shadow(0 0 8px rgba(212, 255, 58, 0.4));
+  }
+  @media (max-width: 480px) {
+    .cube-corner { width: 34px; height: 34px; }
+    .cube-corner--tl { top: 8px; left: 8px; }
+    .cube-corner--tr { top: 8px; right: 8px; }
+    .cube-corner--bl { bottom: 8px; left: 8px; }
+    .cube-corner--br { bottom: 8px; right: 8px; }
+  }
   .orbit-hint-label {
     position: absolute;
     bottom: 46px;
@@ -1175,6 +1223,10 @@
       <div class="hint-popup" id="hint-popup">Need a hint?</div>
 
       <div class="cube-orbit-hints" aria-hidden="true">
+        <span class="cube-corner cube-corner--tl"></span>
+        <span class="cube-corner cube-corner--tr"></span>
+        <span class="cube-corner cube-corner--bl"></span>
+        <span class="cube-corner cube-corner--br"></span>
         <span class="orbit-arrow orbit-arrow--left">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
         </span>
@@ -2158,7 +2210,7 @@
     if (e.target === leaderboardModal) hideLeaderboard();
   });
 
-  // ==================== ORBIT ARROW PULSE ====================
+  // ==================== ORBIT ARROW + CORNER PULSE ====================
   {
     const arrows = gsap.utils.toArray('.orbit-arrow');
     arrows.forEach((a, i) => gsap.fromTo(a,
@@ -2167,6 +2219,15 @@
         scale: 1.15, opacity: 0.9,
         duration: 1.0, yoyo: true, repeat: -1, ease: 'sine.inOut',
         delay: i * 0.12,
+      }
+    ));
+    const corners = gsap.utils.toArray('.cube-corner');
+    corners.forEach((c, i) => gsap.fromTo(c,
+      { opacity: 0.55 },
+      {
+        opacity: 0.95,
+        duration: 1.4, yoyo: true, repeat: -1, ease: 'sine.inOut',
+        delay: i * 0.18,
       }
     ));
     gsap.fromTo('.orbit-hint-label',
