@@ -1475,7 +1475,10 @@
               Math.round(c.position.z / STEP) * STEP
             );
           });
-          if (logMove) moveHistory.push({ face, direction });
+          if (logMove) {
+            moveHistory.push({ face, direction });
+            simplifyMoveHistory();
+          }
           const isUserMove = logMove && !isScrambleMove && !isSolving;
           if (isUserMove) registerUserMove();
           const solved = checkSolved();
@@ -1524,18 +1527,19 @@
     return mismatches;
   }
   const OPPOSITE_FACE = { U: 'D', D: 'U', L: 'R', R: 'L', F: 'B', B: 'F' };
-  function optimalUndoLength() {
-    // Walk history and simplify: combine same-face moves (R + R = R2,
-    // R + R' = cancel, etc.). Same-face moves can commute past opposite
-    // faces (U past D, L past R, F past B) since opposite layers don't
-    // share cubies. Each non-zero net rotation on a face counts as 1
-    // move in the half-turn metric.
+  function simplifyMoveHistory() {
+    // Rewrite moveHistory in place as the minimum quarter-turn sequence
+    // needed to undo back to the solved state: cancel R + R', merge same-
+    // face moves, and commute through opposite faces (U past D, L past R,
+    // F past B) since opposite layers share no cubies. Half-turns produced
+    // by merging are split back into two quarter-turns so each hint click
+    // undoes exactly one move and the counter ticks by 1.
     const condensed = [];
     outer: for (const m of moveHistory) {
       for (let i = condensed.length - 1; i >= 0; i--) {
         if (condensed[i].face === m.face) {
           let total = condensed[i].direction + m.direction;
-          total = ((total % 4) + 4) % 4; // 0..3
+          total = ((total % 4) + 4) % 4;
           if (total === 0) condensed.splice(i, 1);
           else condensed[i].direction = total === 3 ? -1 : total;
           continue outer;
@@ -1544,12 +1548,21 @@
       }
       condensed.push({ face: m.face, direction: m.direction });
     }
-    return condensed.length;
+    const expanded = [];
+    for (const m of condensed) {
+      if (m.direction === 2) {
+        expanded.push({ face: m.face, direction: 1 });
+        expanded.push({ face: m.face, direction: 1 });
+      } else {
+        expanded.push(m);
+      }
+    }
+    moveHistory = expanded;
   }
   function updateDistance() {
     if (!hudDistanceEl) return;
     const prev = parseInt(hudDistanceEl.textContent, 10);
-    const remaining = optimalUndoLength();
+    const remaining = moveHistory.length;
     hudDistanceEl.textContent = remaining;
     if (!isNaN(prev) && prev !== remaining) {
       gsap.fromTo(hudDistanceEl,
