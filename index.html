@@ -1515,13 +1515,35 @@
     }
     return mismatches;
   }
+  const OPPOSITE_FACE = { U: 'D', D: 'U', L: 'R', R: 'L', F: 'B', B: 'F' };
+  function optimalUndoLength() {
+    // Walk history and simplify: combine same-face moves (R + R = R2,
+    // R + R' = cancel, etc.). Same-face moves can commute past opposite
+    // faces (U past D, L past R, F past B) since opposite layers don't
+    // share cubies. Each non-zero net rotation on a face counts as 1
+    // move in the half-turn metric.
+    const condensed = [];
+    outer: for (const m of moveHistory) {
+      for (let i = condensed.length - 1; i >= 0; i--) {
+        if (condensed[i].face === m.face) {
+          let total = condensed[i].direction + m.direction;
+          total = ((total % 4) + 4) % 4; // 0..3
+          if (total === 0) condensed.splice(i, 1);
+          else condensed[i].direction = total === 3 ? -1 : total;
+          continue outer;
+        }
+        if (condensed[i].face !== OPPOSITE_FACE[m.face]) break;
+      }
+      condensed.push({ face: m.face, direction: m.direction });
+    }
+    return condensed.length;
+  }
   function updateDistance() {
     if (!hudDistanceEl) return;
     const prev = parseInt(hudDistanceEl.textContent, 10);
-    const mismatches = countMismatches();
-    const approxMoves = mismatches === 0 ? 0 : Math.max(1, Math.ceil(mismatches / 4));
-    hudDistanceEl.textContent = approxMoves;
-    if (!isNaN(prev) && prev !== approxMoves) {
+    const remaining = optimalUndoLength();
+    hudDistanceEl.textContent = remaining;
+    if (!isNaN(prev) && prev !== remaining) {
       gsap.fromTo(hudDistanceEl,
         { scale: 1.45 },
         { scale: 1, duration: 0.55, ease: 'back.out(2.4)' }
