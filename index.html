@@ -1795,9 +1795,15 @@
     hudHintsEl.textContent = '0';
     setGameState('idle');
     hintPopupShown = false;
+    if (typeof hintPopupDismissed !== 'undefined') hintPopupDismissed = false;
+    if (typeof simplifyHandoffTimer !== 'undefined') {
+      clearTimeout(simplifyHandoffTimer);
+      simplifyHandoffTimer = null;
+    }
     hideHintPopup(false);
     if (typeof simplifyPopupShown !== 'undefined') {
       simplifyPopupShown = false;
+      simplifyPopupDismissed = false;
       hideSimplifyPopup(false);
     }
   }
@@ -1826,7 +1832,7 @@
     setTimeout(() => {
       if (gameState !== 'idle') return;
       if (!rulesModalShown) showRulesModal();
-      else maybeShowHintPopup();
+      else playStartupPopups();
     }, 700);
   }
 
@@ -2305,6 +2311,7 @@
   let hintPopupDismissed = false;
   let hintPopupFloatTween = null;
   let hintPopupAutoTimer = null;
+  let simplifyHandoffTimer = null;
   const HINT_POPUP_AUTO_HIDE_MS = 4500;
   const POPUP_HANDOFF_MS = 600;
 
@@ -2322,10 +2329,16 @@
       ease: 'sine.inOut', delay: 0.5,
     });
     clearTimeout(hintPopupAutoTimer);
-    hintPopupAutoTimer = setTimeout(() => {
+    hintPopupAutoTimer = setTimeout(() => hideHintPopup(true), HINT_POPUP_AUTO_HIDE_MS);
+  }
+  // Show hint popup, then hand off to simplify popup independently of
+  // how (or whether) the player dismisses the hint popup along the way.
+  function playStartupPopups() {
+    if (gameState !== 'idle' && gameState !== 'playing') return;
+    maybeShowHintPopup();
+    clearTimeout(simplifyHandoffTimer);
+    simplifyHandoffTimer = setTimeout(() => {
       hideHintPopup(true);
-      // After the hint popup fades out, hand off to the simplify
-      // popup so the player learns about that escape hatch too.
       setTimeout(() => maybeShowSimplifyPopup(), POPUP_HANDOFF_MS);
     }, HINT_POPUP_AUTO_HIDE_MS);
   }
@@ -2402,7 +2415,7 @@
     .to(card, { scale: 0.95, autoAlpha: 0, duration: 0.3, ease: 'power2.in' })
     .to(rulesModal, { autoAlpha: 0, duration: 0.3, ease: 'power2.inOut' }, '-=0.15');
     setTimeout(() => {
-      if (gameState === 'idle' || gameState === 'playing') maybeShowHintPopup();
+      if (gameState === 'idle' || gameState === 'playing') playStartupPopups();
     }, 700);
   }
   rulesCta.addEventListener('click', hideRulesModal);
