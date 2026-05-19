@@ -2038,7 +2038,6 @@
     // isHintMove === true, so the counter ticks down by 1.
     twistFace(next.face, next.direction, 0.32, false, false, true);
     updateCreditUI();
-    if (userHints >= 2) maybeShowSimplifyPopup();
   }
 
   async function useSimplify() {
@@ -2306,7 +2305,8 @@
   let hintPopupDismissed = false;
   let hintPopupFloatTween = null;
   let hintPopupAutoTimer = null;
-  const HINT_POPUP_AUTO_HIDE_MS = 13000;
+  const HINT_POPUP_AUTO_HIDE_MS = 4500;
+  const POPUP_HANDOFF_MS = 600;
 
   function maybeShowHintPopup() {
     if (hintPopupShown || hintPopupDismissed) return;
@@ -2322,7 +2322,12 @@
       ease: 'sine.inOut', delay: 0.5,
     });
     clearTimeout(hintPopupAutoTimer);
-    hintPopupAutoTimer = setTimeout(() => hideHintPopup(true), HINT_POPUP_AUTO_HIDE_MS);
+    hintPopupAutoTimer = setTimeout(() => {
+      hideHintPopup(true);
+      // After the hint popup fades out, hand off to the simplify
+      // popup so the player learns about that escape hatch too.
+      setTimeout(() => maybeShowSimplifyPopup(), POPUP_HANDOFF_MS);
+    }, HINT_POPUP_AUTO_HIDE_MS);
   }
   function hideHintPopup(permanent) {
     if (hintPopupAutoTimer) { clearTimeout(hintPopupAutoTimer); hintPopupAutoTimer = null; }
@@ -2337,7 +2342,7 @@
   let simplifyPopupDismissed = false;
   let simplifyPopupFloatTween = null;
   let simplifyPopupAutoTimer = null;
-  const SIMPLIFY_POPUP_AUTO_HIDE_MS = 14000;
+  const SIMPLIFY_POPUP_AUTO_HIDE_MS = 5500;
 
   function maybeShowSimplifyPopup() {
     if (!simplifyPopup) return;
