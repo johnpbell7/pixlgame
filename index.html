@@ -251,6 +251,64 @@
   .action-btn.solve-btn { border-color: rgba(61, 245, 255, 0.45); color: var(--pixl-cyan); }
   .action-btn.solve-btn:hover:not(:disabled) { background: var(--pixl-cyan); border-color: var(--pixl-cyan); color: #0d0524; }
   .action-btn#btn-scramble:hover:not(:disabled) { background: var(--pixl-magenta); border-color: var(--pixl-magenta); }
+  .action-btn.simplify-btn {
+    border-color: rgba(212, 255, 58, 0.5);
+    color: var(--pixl-lime);
+    width: auto;
+    padding: 0 10px 0 8px;
+    gap: 4px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .action-btn.simplify-btn:hover:not(:disabled) { background: var(--pixl-lime); border-color: var(--pixl-lime); color: #0d0524; }
+  .action-btn.simplify-btn .simplify-cost {
+    background: rgba(212, 255, 58, 0.18);
+    border: 1px solid rgba(212, 255, 58, 0.5);
+    border-radius: 999px;
+    padding: 1px 6px;
+    line-height: 1;
+    font-size: 10px;
+    color: inherit;
+  }
+  .action-btn.simplify-btn:hover:not(:disabled) .simplify-cost {
+    background: rgba(13, 5, 36, 0.2);
+    border-color: rgba(13, 5, 36, 0.4);
+  }
+
+  /* Reset button — kept far from the other actions so it isn't fat-finger
+     clicked. Anchored bottom-left of the cube stage with a danger tint. */
+  .reset-btn {
+    position: absolute;
+    bottom: 14px; left: 14px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px 6px 9px;
+    background: rgba(13, 5, 36, 0.65);
+    border: 1px solid rgba(255, 92, 132, 0.45);
+    color: rgba(255, 192, 207, 0.92);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.2s ease;
+  }
+  .reset-btn svg { width: 12px; height: 12px; opacity: 0.9; }
+  .reset-btn:hover:not(:disabled) {
+    background: rgba(255, 45, 146, 0.22);
+    border-color: var(--pixl-pink);
+    color: #fff;
+    transform: scale(1.04);
+  }
+  .reset-btn:active:not(:disabled) { transform: scale(0.96); }
+  .reset-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
   /* =====================================================
      BOTTOM HUD — three states (hint / live / win)
@@ -1247,10 +1305,18 @@
       </div>
 
       <div class="cube-actions">
-        <button class="action-btn hint-btn" id="btn-hint" aria-label="Hint" title="Hint — auto-twists one move">
+        <button class="action-btn hint-btn" id="btn-hint" aria-label="Hint" title="Hint — auto-twists one optimal move">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
         </button>
+        <button class="action-btn simplify-btn" id="btn-simplify" aria-label="Simplify" title="Simplify — auto-twists the next 5 optimal moves (costs 5 hints)">
+          <span class="simplify-cost" aria-hidden="true">5</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>
+        </button>
       </div>
+      <button class="reset-btn" id="btn-reset" type="button" aria-label="Reset game" title="Reset — abandon this run and re-scramble">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+        <span>Reset</span>
+      </button>
 
       <div class="cube-stats" id="cube-stats" data-state="hint">
         <span class="hud-stat">
@@ -1316,6 +1382,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/cube.js"></script>
 
 <script>
 (function () {
@@ -1476,11 +1543,10 @@
               Math.round(c.position.z / STEP) * STEP
             );
           });
-          if (logMove) {
-            moveHistory.push({ face, direction });
-            simplifyMoveHistory();
-          }
-          const isUserMove = logMove && !isScrambleMove && !isSolving;
+          if (logMove) moveHistory.push({ face, direction });
+          if (logMove || isHintMove) applyMoveToSolverCube(face, direction);
+          if (logMove || isHintMove) requestSolve();
+          const isUserMove = logMove && !isScrambleMove && !isHintMove && !isSolving;
           if (isUserMove) registerUserMove();
           const solved = checkSolved();
           if (!isSolving) {
@@ -1527,45 +1593,108 @@
     }
     return mismatches;
   }
-  const OPPOSITE_FACE = { U: 'D', D: 'U', L: 'R', R: 'L', F: 'B', B: 'F' };
-  function simplifyMoveHistory() {
-    // Rewrite moveHistory in place as the minimum quarter-turn sequence
-    // needed to undo back to the solved state: cancel R + R', merge same-
-    // face moves, and commute through opposite faces (U past D, L past R,
-    // F past B) since opposite layers share no cubies. Half-turns produced
-    // by merging are split back into two quarter-turns so each hint click
-    // undoes exactly one move and the counter ticks by 1.
-    const condensed = [];
-    outer: for (const m of moveHistory) {
-      for (let i = condensed.length - 1; i >= 0; i--) {
-        if (condensed[i].face === m.face) {
-          let total = condensed[i].direction + m.direction;
-          total = ((total % 4) + 4) % 4;
-          if (total === 0) condensed.splice(i, 1);
-          else condensed[i].direction = total === 3 ? -1 : total;
-          continue outer;
-        }
-        if (condensed[i].face !== OPPOSITE_FACE[m.face]) break;
-      }
-      condensed.push({ face: m.face, direction: m.direction });
-    }
-    const expanded = [];
-    for (const m of condensed) {
-      if (m.direction === 2) {
-        expanded.push({ face: m.face, direction: 1 });
-        expanded.push({ face: m.face, direction: 1 });
+  // ==================== SOLVER ====================
+  // Uses a Web Worker running cubejs (Kociemba two-phase) so the
+  // "to solve" counter reflects the true minimum-move distance from
+  // the current state and each hint applies the next optimal move.
+  let solverCube = null;
+  let solverReady = false;
+  let solverFailed = false;
+  let currentSolution = null;
+  let solveVersion = 0;
+  let solveWorker = null;
+
+  function moveToCubejs(face, direction) {
+    if (direction === -1) return face + "'";
+    if (direction === 2 || direction === -2) return face + '2';
+    return face;
+  }
+  function parseSolverSolution(sol) {
+    if (!sol || !sol.trim()) return [];
+    const out = [];
+    for (const t of sol.trim().split(/\s+/)) {
+      if (!t) continue;
+      const face = t[0];
+      if (t.length > 1 && t[1] === '2') {
+        out.push({ face, direction: 1 });
+        out.push({ face, direction: 1 });
+      } else if (t.length > 1 && t[1] === "'") {
+        out.push({ face, direction: -1 });
       } else {
-        expanded.push(m);
+        out.push({ face, direction: 1 });
       }
     }
-    moveHistory = expanded;
+    return out;
+  }
+  function requestSolve() {
+    if (!solveWorker || !solverReady || !solverCube) return;
+    solveVersion++;
+    currentSolution = null;
+    solveWorker.postMessage({
+      cmd: 'solve',
+      version: solveVersion,
+      cube: solverCube.toJSON()
+    });
+  }
+  function initSolver() {
+    if (typeof Cube === 'undefined') { solverFailed = true; return; }
+    solverCube = new Cube();
+    const workerSrc = `
+      importScripts('https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/cube.js',
+                    'https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/solve.js');
+      let inited = false;
+      self.onmessage = function(e) {
+        const a = e.data;
+        if (a.cmd === 'init') {
+          if (!inited) { Cube.initSolver(); inited = true; }
+          self.postMessage({ cmd: 'init' });
+        } else if (a.cmd === 'solve') {
+          try {
+            const c = new Cube(a.cube);
+            self.postMessage({ cmd: 'solve', version: a.version, sol: c.solve() });
+          } catch (err) {
+            self.postMessage({ cmd: 'solve', version: a.version, sol: null });
+          }
+        }
+      };
+    `;
+    try {
+      const blob = new Blob([workerSrc], { type: 'application/javascript' });
+      solveWorker = new Worker(URL.createObjectURL(blob));
+    } catch (e) {
+      solverFailed = true;
+      return;
+    }
+    solveWorker.onmessage = (e) => {
+      const d = e.data;
+      if (d.cmd === 'init') {
+        solverReady = true;
+        requestSolve();
+        updateCreditUI();
+        updateDistance();
+      } else if (d.cmd === 'solve' && d.version === solveVersion && d.sol !== null) {
+        currentSolution = parseSolverSolution(d.sol);
+        updateDistance();
+        updateCreditUI();
+      }
+    };
+    solveWorker.onerror = () => { solverFailed = true; updateCreditUI(); updateDistance(); };
+    solveWorker.postMessage({ cmd: 'init' });
+  }
+  function applyMoveToSolverCube(face, direction) {
+    if (!solverCube) return;
+    try { solverCube.move(moveToCubejs(face, direction)); } catch (e) {}
   }
   function updateDistance() {
     if (!hudDistanceEl) return;
+    let display;
+    if (solverFailed) display = '—';
+    else if (!solverReady || currentSolution === null) display = '…';
+    else display = String(currentSolution.length);
     const prev = parseInt(hudDistanceEl.textContent, 10);
-    const remaining = moveHistory.length;
-    hudDistanceEl.textContent = remaining;
-    if (!isNaN(prev) && prev !== remaining) {
+    hudDistanceEl.textContent = display;
+    const next = parseInt(display, 10);
+    if (!isNaN(prev) && !isNaN(next) && prev !== next) {
       gsap.fromTo(hudDistanceEl,
         { scale: 1.45 },
         { scale: 1, duration: 0.55, ease: 'back.out(2.4)' }
@@ -1696,6 +1825,8 @@
   async function scramble(steps = 16) {
     if (isAnimating || isSolving || isHinting) return;
     moveHistory = [];
+    if (typeof Cube !== 'undefined') solverCube = new Cube();
+    currentSolution = null;
     resetGameToIdle();
     setGameState('scrambling');
     let lastFace = null;
@@ -1866,11 +1997,19 @@
   }
 
   // ==================== HINT + ACTION BUTTONS ====================
-  const btnHint = document.getElementById('btn-hint');
+  const btnHint     = document.getElementById('btn-hint');
+  const btnSimplify = document.getElementById('btn-simplify');
+  const btnReset    = document.getElementById('btn-reset');
 
+  function noSolverMoves() {
+    return !solverReady || currentSolution === null || currentSolution.length === 0;
+  }
   function updateCreditUI() {
-    const solved = checkSolved();
-    btnHint.disabled = isAnimating || isSolving || isHinting || solved || moveHistory.length === 0;
+    const blocked = isAnimating || isSolving || isHinting;
+    const stuck   = noSolverMoves();
+    btnHint.disabled = blocked || stuck;
+    if (btnSimplify) btnSimplify.disabled = blocked || stuck;
+    if (btnReset) btnReset.disabled = isAnimating || isSolving || isHinting;
   }
   function resetCredits() { updateCreditUI(); }
 
@@ -1883,22 +2022,84 @@
     );
     useHint();
   });
+  if (btnSimplify) {
+    btnSimplify.addEventListener('click', () => {
+      if (btnSimplify.disabled) return;
+      gsap.fromTo(btnSimplify,
+        { scale: 1.15 },
+        { scale: 1, duration: 0.45, ease: 'elastic.out(1, 0.4)' }
+      );
+      useSimplify();
+    });
+  }
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (btnReset.disabled) return;
+      scramble(16);
+    });
+  }
   btnPlayAgain.addEventListener('click', () => {
     scramble(16);
   });
 
   function useHint() {
     if (isAnimating || isSolving || isHinting) return;
-    if (moveHistory.length === 0) return;
+    if (noSolverMoves()) return;
     if (gameState === 'idle' || gameState === 'scrambling') {
       setGameState('playing');
       startTimer();
     }
     userHints++;
     hudHintsEl.textContent = userHints;
-    const last = moveHistory.pop();
-    twistFace(last.face, -last.direction, 0.32, false, false, true);
+    hideHintPopup(true);
+    const next = currentSolution[0];
+    twistFace(next.face, next.direction, 0.32, false, false, true);
     updateCreditUI();
+  }
+
+  async function useSimplify() {
+    if (isAnimating || isSolving || isHinting) return;
+    if (noSolverMoves()) return;
+    if (gameState === 'idle' || gameState === 'scrambling') {
+      setGameState('playing');
+      startTimer();
+    }
+    hideHintPopup(true);
+    // Simplify charges 5 hints worth of score regardless of how many
+    // moves we actually need to apply; if the cube is solvable in fewer
+    // than 5 moves the score penalty still stands so it can't be used
+    // as a free "almost solved" cleanup.
+    userHints += 5;
+    hudHintsEl.textContent = userHints;
+    isHinting = true;
+    updateCreditUI();
+    try {
+      for (let i = 0; i < 5; i++) {
+        if (!currentSolution || currentSolution.length === 0) break;
+        const next = currentSolution[0];
+        await twistFace(next.face, next.direction, 0.24, false, false, true);
+        // Wait for the next solve to come back from the worker so the
+        // following iteration reads a fresh currentSolution[0].
+        await waitForSolution();
+        if (checkSolved()) break;
+      }
+    } finally {
+      isHinting = false;
+      updateCreditUI();
+    }
+  }
+
+  function waitForSolution() {
+    return new Promise(resolve => {
+      const expected = solveVersion;
+      const start = performance.now();
+      function check() {
+        if (currentSolution !== null && solveVersion === expected) return resolve();
+        if (performance.now() - start > 2000) return resolve();
+        setTimeout(check, 25);
+      }
+      check();
+    });
   }
 
   // ==================== ROTATION + POINTER ====================
@@ -2411,6 +2612,9 @@
     .to(introOverlay, { autoAlpha: 0, duration: 0.5, ease: 'power2.inOut' }, '-=0.15');
   }
   introCta.addEventListener('click', dismissIntro);
+  // Kick off solver prep while the intro is on screen so the worker is
+  // usually ready by the time the cube finishes scrambling.
+  initSolver();
   document.addEventListener('keydown', (e) => {
     if (!introDismissed && (e.key === 'Escape' || e.key === 'Enter')) {
       e.preventDefault();
