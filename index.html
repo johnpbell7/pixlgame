@@ -1646,6 +1646,8 @@
   let currentSolution = null;
   let solveVersion = 0;
   let solveWorker = null;
+  let lastDistanceDisplay = null;
+  let inSimplifyAutoplay = false;
 
   function moveToCubejs(face, direction) {
     if (direction === -1) return face + "'";
@@ -1671,6 +1673,7 @@
   }
   function requestSolve() {
     if (!solveWorker || !solverReady || !solverCube) return;
+    if (inSimplifyAutoplay) return; // simplify already knows the plan
     solveVersion++;
     currentSolution = null;
     solveWorker.postMessage({
@@ -1730,10 +1733,20 @@
   }
   function updateDistance() {
     if (!hudDistanceEl) return;
+    if (inSimplifyAutoplay) return; // Simplify drives the counter directly
     let display;
     if (solverFailed) display = '—';
-    else if (!solverReady || currentSolution === null) display = '…';
-    else display = String(currentSolution.length);
+    else if (!solverReady) display = '…';
+    else if (currentSolution !== null) {
+      display = String(currentSolution.length);
+      lastDistanceDisplay = display;
+    } else if (lastDistanceDisplay !== null) {
+      // Worker re-solve is in flight. Keep showing the last known count
+      // instead of flickering through "…" between every move.
+      display = lastDistanceDisplay;
+    } else {
+      display = '…';
+    }
     const prev = parseInt(hudDistanceEl.textContent, 10);
     hudDistanceEl.textContent = display;
     const next = parseInt(display, 10);
@@ -1874,6 +1887,7 @@
     moveHistory = [];
     if (typeof Cube !== 'undefined') solverCube = new Cube();
     currentSolution = null;
+    lastDistanceDisplay = null;
     resetGameToIdle();
     setGameState('scrambling');
     let lastFace = null;
@@ -2116,21 +2130,38 @@
     }
     hideHintPopup(true);
     hideSimplifyPopup(true);
-    // Simplify charges 5 hints worth of score. We snapshot the worker's
-    // current optimal solution and play it out in full, so by the end
-    // the cube is solved (and the win celebration fires naturally).
+    // Snapshot the optimal solution from the current state and play it
+    // out to the end so the cube actually finishes solved. While the
+    // auto-play runs we drive the counter manually (decrement by 1 per
+    // move) instead of round-tripping every move through the worker —
+    // that round-trip is what was making the counter jitter.
     const plan = currentSolution.slice();
     userHints += 5;
     hudHintsEl.textContent = userHints;
     isHinting = true;
+    inSimplifyAutoplay = true;
+    let remaining = plan.length;
+    hudDistanceEl.textContent = String(remaining);
+    lastDistanceDisplay = String(remaining);
     updateCreditUI();
     try {
       for (const move of plan) {
         if (checkSolved()) break;
         await twistFace(move.face, move.direction, 0.18, false, false, true);
+        remaining--;
+        hudDistanceEl.textContent = String(remaining);
+        lastDistanceDisplay = String(remaining);
+        gsap.fromTo(hudDistanceEl,
+          { scale: 1.35 },
+          { scale: 1, duration: 0.35, ease: 'back.out(2)' }
+        );
       }
     } finally {
+      inSimplifyAutoplay = false;
       isHinting = false;
+      // Resync the worker with the final state (typically solved) so
+      // the counter / hint button reflect reality after auto-play.
+      requestSolve();
       updateCreditUI();
     }
   }
