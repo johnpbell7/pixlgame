@@ -219,11 +219,12 @@
   }
   #cube-canvas.grabbing { cursor: grabbing; }
 
-  /* Top-right actions — icon-only round buttons */
+  /* Top-right actions — stacked vertically so they don't crowd the
+     score HUD on the left. */
   .cube-actions {
     position: absolute;
     top: 14px; right: 14px;
-    display: flex; gap: 6px;
+    display: flex; flex-direction: column; gap: 8px;
     z-index: 4;
   }
   .action-btn {
@@ -254,26 +255,58 @@
   .action-btn.simplify-btn {
     border-color: rgba(212, 255, 58, 0.5);
     color: var(--pixl-lime);
-    width: auto;
-    padding: 0 10px 0 8px;
-    gap: 4px;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 800;
+    position: relative;
+    overflow: visible;
   }
   .action-btn.simplify-btn:hover:not(:disabled) { background: var(--pixl-lime); border-color: var(--pixl-lime); color: #0d0524; }
   .action-btn.simplify-btn .simplify-cost {
-    background: rgba(212, 255, 58, 0.18);
-    border: 1px solid rgba(212, 255, 58, 0.5);
+    position: absolute;
+    top: -6px; right: -8px;
+    background: var(--pixl-lime);
+    color: #0d0524;
     border-radius: 999px;
-    padding: 1px 6px;
+    padding: 1px 5px 1px 4px;
     line-height: 1;
-    font-size: 10px;
-    color: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
   }
-  .action-btn.simplify-btn:hover:not(:disabled) .simplify-cost {
-    background: rgba(13, 5, 36, 0.2);
-    border-color: rgba(13, 5, 36, 0.4);
+
+  /* Simplify popup — sits just below the action buttons, arrow points
+     up at the Simplify button so it's unambiguous which control it
+     describes. */
+  .simplify-popup {
+    position: absolute;
+    top: 100px;
+    right: 14px;
+    z-index: 5;
+    pointer-events: none;
+    background: linear-gradient(135deg, var(--pixl-lime), #9ee23a);
+    color: #0d0524;
+    padding: 8px 13px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    box-shadow: 0 8px 20px rgba(13, 5, 36, 0.35);
+  }
+  .simplify-popup b { font-weight: 800; }
+  .simplify-popup::after {
+    content: '';
+    position: absolute;
+    top: -6px; right: 13px;
+    width: 12px; height: 12px;
+    background: inherit;
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+  @media (max-width: 480px) {
+    .simplify-popup { font-size: 11px; padding: 7px 12px; }
   }
 
   /* Reset button — kept far from the other actions so it isn't fat-finger
@@ -1207,7 +1240,16 @@
         </span>
         <div class="rules-text">
           <b>Hints cost you points.</b>
-          <span>Only tap the lightbulb when you're really stuck.</span>
+          <span>Tap the lightbulb to play the next optimal move — only do it when you're really stuck.</span>
+        </div>
+      </li>
+      <li>
+        <span class="rules-icon lime">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>
+        </span>
+        <div class="rules-text">
+          <b>Simplify auto-solves for 5 hints.</b>
+          <span>If you're stuck for good, the lime button plays out the full solution — at the cost of 5 hints from your score.</span>
         </div>
       </li>
       <li>
@@ -1305,14 +1347,15 @@
       </div>
 
       <div class="cube-actions">
-        <button class="action-btn hint-btn" id="btn-hint" aria-label="Hint" title="Hint — auto-twists one optimal move">
+        <button class="action-btn hint-btn" id="btn-hint" type="button" disabled aria-label="Hint" title="Hint — auto-twists one optimal move">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
         </button>
-        <button class="action-btn simplify-btn" id="btn-simplify" aria-label="Simplify" title="Simplify — auto-twists the next 5 optimal moves (costs 5 hints)">
-          <span class="simplify-cost" aria-hidden="true">5</span>
+        <button class="action-btn simplify-btn" id="btn-simplify" type="button" disabled aria-label="Simplify" title="Simplify — auto-solves for a 5-hint score penalty">
+          <span class="simplify-cost" aria-hidden="true">−5</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>
         </button>
       </div>
+      <div class="simplify-popup" id="simplify-popup">Stuck? <b>Simplify</b> auto-solves — costs 5 hints</div>
       <button class="reset-btn" id="btn-reset" type="button" aria-label="Reset game" title="Reset — abandon this run and re-scramble">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
         <span>Reset</span>
@@ -1818,6 +1861,10 @@
     setGameState('idle');
     hintPopupShown = false;
     hideHintPopup(false);
+    if (typeof simplifyPopupShown !== 'undefined') {
+      simplifyPopupShown = false;
+      hideSimplifyPopup(false);
+    }
   }
 
   // ==================== SCRAMBLE / SOLVE ====================
@@ -2055,6 +2102,9 @@
     const next = currentSolution[0];
     twistFace(next.face, next.direction, 0.32, false, false, true);
     updateCreditUI();
+    // After the player has leaned on Hint a couple of times, surface
+    // Simplify as the "I'm stuck, just solve it" escape hatch.
+    if (userHints >= 2) maybeShowSimplifyPopup();
   }
 
   async function useSimplify() {
@@ -2065,41 +2115,24 @@
       startTimer();
     }
     hideHintPopup(true);
-    // Simplify charges 5 hints worth of score regardless of how many
-    // moves we actually need to apply; if the cube is solvable in fewer
-    // than 5 moves the score penalty still stands so it can't be used
-    // as a free "almost solved" cleanup.
+    hideSimplifyPopup(true);
+    // Simplify charges 5 hints worth of score. We snapshot the worker's
+    // current optimal solution and play it out in full, so by the end
+    // the cube is solved (and the win celebration fires naturally).
+    const plan = currentSolution.slice();
     userHints += 5;
     hudHintsEl.textContent = userHints;
     isHinting = true;
     updateCreditUI();
     try {
-      for (let i = 0; i < 5; i++) {
-        if (!currentSolution || currentSolution.length === 0) break;
-        const next = currentSolution[0];
-        await twistFace(next.face, next.direction, 0.24, false, false, true);
-        // Wait for the next solve to come back from the worker so the
-        // following iteration reads a fresh currentSolution[0].
-        await waitForSolution();
+      for (const move of plan) {
         if (checkSolved()) break;
+        await twistFace(move.face, move.direction, 0.18, false, false, true);
       }
     } finally {
       isHinting = false;
       updateCreditUI();
     }
-  }
-
-  function waitForSolution() {
-    return new Promise(resolve => {
-      const expected = solveVersion;
-      const start = performance.now();
-      function check() {
-        if (currentSolution !== null && solveVersion === expected) return resolve();
-        if (performance.now() - start > 2000) return resolve();
-        setTimeout(check, 25);
-      }
-      check();
-    });
   }
 
   // ==================== ROTATION + POINTER ====================
@@ -2360,6 +2393,39 @@
     if (hintPopupFloatTween) { hintPopupFloatTween.kill(); hintPopupFloatTween = null; }
     gsap.to(hintPopup, { autoAlpha: 0, y: -8, scale: 0.9, duration: 0.25, ease: 'power2.in' });
     if (permanent) hintPopupDismissed = true;
+  }
+
+  // ==================== SIMPLIFY POPUP ====================
+  const simplifyPopup = document.getElementById('simplify-popup');
+  let simplifyPopupShown = false;
+  let simplifyPopupDismissed = false;
+  let simplifyPopupFloatTween = null;
+  let simplifyPopupAutoTimer = null;
+  const SIMPLIFY_POPUP_AUTO_HIDE_MS = 14000;
+
+  function maybeShowSimplifyPopup() {
+    if (!simplifyPopup) return;
+    if (simplifyPopupShown || simplifyPopupDismissed) return;
+    if (rulesModalActive) return;
+    if (checkSolved()) return;
+    simplifyPopupShown = true;
+    gsap.fromTo(simplifyPopup,
+      { autoAlpha: 0, y: -10, scale: 0.85 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.7)' }
+    );
+    simplifyPopupFloatTween = gsap.to(simplifyPopup, {
+      y: -4, duration: 1.0, yoyo: true, repeat: -1,
+      ease: 'sine.inOut', delay: 0.5,
+    });
+    clearTimeout(simplifyPopupAutoTimer);
+    simplifyPopupAutoTimer = setTimeout(() => hideSimplifyPopup(true), SIMPLIFY_POPUP_AUTO_HIDE_MS);
+  }
+  function hideSimplifyPopup(permanent) {
+    if (!simplifyPopup) return;
+    if (simplifyPopupAutoTimer) { clearTimeout(simplifyPopupAutoTimer); simplifyPopupAutoTimer = null; }
+    if (simplifyPopupFloatTween) { simplifyPopupFloatTween.kill(); simplifyPopupFloatTween = null; }
+    gsap.to(simplifyPopup, { autoAlpha: 0, y: -8, scale: 0.9, duration: 0.25, ease: 'power2.in' });
+    if (permanent) simplifyPopupDismissed = true;
   }
 
   // ==================== RULES MODAL ====================
