@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>PIXL — Twist It. Solve It. Win It.</title>
+<title>Fleur's Cube</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,22 +16,22 @@
     font-display: swap;
   }
   :root {
-    --pixl-bg-1: #1a0a3d;
-    --pixl-bg-2: #2d1466;
-    --pixl-bg-3: #0d0524;
-    --pixl-purple: #6b3df5;
-    --pixl-purple-light: #a78bfa;
-    --pixl-magenta: #ff2d92;
-    --pixl-pink: #ff5cb8;
-    --pixl-lime: #d4ff3a;
-    --pixl-cyan: #3df5ff;
-    --pixl-orange: #ff8a1a;
-    --pixl-white: #fafaff;
+    --fleur-bg-1: #1a0a3d;
+    --fleur-bg-2: #2d1466;
+    --fleur-bg-3: #0d0524;
+    --fleur-purple: #6b3df5;
+    --fleur-purple-light: #a78bfa;
+    --fleur-magenta: #ff2d92;
+    --fleur-pink: #ff5cb8;
+    --fleur-lime: #d4ff3a;
+    --fleur-cyan: #3df5ff;
+    --fleur-orange: #ff8a1a;
+    --fleur-white: #fafaff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    background: var(--pixl-bg-3);
-    color: var(--pixl-white);
+    background: var(--fleur-bg-3);
+    color: var(--fleur-white);
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
@@ -45,7 +45,7 @@
     background:
       radial-gradient(ellipse 80% 60% at 75% 40%, rgba(255, 45, 146, 0.28), transparent 60%),
       radial-gradient(ellipse 60% 80% at 20% 70%, rgba(107, 61, 245, 0.38), transparent 60%),
-      linear-gradient(160deg, var(--pixl-bg-1) 0%, var(--pixl-bg-2) 45%, var(--pixl-bg-3) 100%);
+      linear-gradient(160deg, var(--fleur-bg-1) 0%, var(--fleur-bg-2) 45%, var(--fleur-bg-3) 100%);
     overflow: hidden;
     padding: 1.25rem;
   }
@@ -81,10 +81,18 @@
     justify-content: space-between;
     box-shadow: 0 8px 32px rgba(13, 5, 36, 0.4);
   }
-  .nav-menu { background: none; border: none; cursor: pointer; color: var(--pixl-purple); padding: 4px 8px; display: flex; }
+  .nav-menu { background: none; border: none; cursor: pointer; color: var(--fleur-purple); padding: 4px 8px; display: flex; }
   .nav-menu svg { width: 22px; height: 22px; }
-  .nav-logo { display: inline-flex; align-items: center; line-height: 0; }
-  .nav-logo svg { height: 22px; width: auto; display: block; }
+  .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Bolota', 'Bowlby One', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: #471EB0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
   .nav-right { display: inline-flex; align-items: center; gap: 10px; }
   .nav-dev {
     display: inline-flex;
@@ -94,7 +102,7 @@
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: var(--pixl-purple);
+    color: var(--fleur-purple);
     background: rgba(107, 61, 245, 0.1);
     padding: 5px 11px;
     border-radius: 999px;
@@ -106,11 +114,11 @@
     content: '';
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: var(--pixl-magenta);
-    box-shadow: 0 0 8px var(--pixl-magenta);
+    background: var(--fleur-magenta);
+    box-shadow: 0 0 8px var(--fleur-magenta);
   }
   .nav-dev:hover { background: rgba(107, 61, 245, 0.2); transform: translateY(-1px); }
-  .nav-cart { width: 38px; height: 38px; background: var(--pixl-purple); border-radius: 999px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; color: white; }
+  .nav-cart { width: 38px; height: 38px; background: var(--fleur-purple); border-radius: 999px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; color: white; }
   .nav-cart svg { width: 17px; height: 17px; }
 
   .hero-grid {
@@ -129,7 +137,7 @@
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(212, 255, 58, 0.15);
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     border: 1px solid rgba(212, 255, 58, 0.3);
     padding: 6px 14px;
     border-radius: 999px;
@@ -139,7 +147,7 @@
     text-transform: uppercase;
     margin-bottom: 1.25rem;
   }
-  .hero-eyebrow .dot { width: 6px; height: 6px; background: var(--pixl-lime); border-radius: 50%; }
+  .hero-eyebrow .dot { width: 6px; height: 6px; background: var(--fleur-lime); border-radius: 50%; }
 
   .hero-title {
     font-family: 'Bolota', 'Bowlby One', sans-serif;
@@ -147,12 +155,12 @@
     line-height: 0.95;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     text-wrap: balance;
     margin-bottom: 1.25rem;
   }
-  .hero-title .pink { color: var(--pixl-magenta); }
-  .hero-title .lime { color: var(--pixl-lime); }
+  .hero-title .pink { color: var(--fleur-magenta); }
+  .hero-title .lime { color: var(--fleur-lime); }
   .hero-line { display: block; }
 
   .hero-sub {
@@ -162,7 +170,7 @@
     max-width: 38ch;
     margin-bottom: 1.75rem;
   }
-  .hero-sub strong { color: var(--pixl-white); font-weight: 700; }
+  .hero-sub strong { color: var(--fleur-white); font-weight: 700; }
 
   .hero-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; }
   .btn {
@@ -180,14 +188,14 @@
     transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
   }
   .btn-primary {
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #1a1a1a;
     box-shadow: 0 8px 24px rgba(212, 255, 58, 0.35);
   }
   .btn-primary:hover { transform: translateY(-2px); }
   .btn-ghost {
     background: rgba(250, 250, 255, 0.08);
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     border: 1px solid rgba(250, 250, 255, 0.18);
   }
   .btn-ghost:hover { background: rgba(250, 250, 255, 0.14); }
@@ -199,7 +207,7 @@
     font-size: 13px;
   }
   .hero-bullets span { display: inline-flex; align-items: center; gap: 6px; }
-  .hero-bullets svg { width: 14px; height: 14px; color: var(--pixl-lime); }
+  .hero-bullets svg { width: 14px; height: 14px; color: var(--fleur-lime); }
 
   /* ===== CUBE STAGE ===== */
   .cube-stage {
@@ -233,7 +241,7 @@
     border: 1px solid rgba(167, 139, 250, 0.3);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     border-radius: 999px;
     cursor: pointer;
     font-family: inherit;
@@ -247,22 +255,22 @@
   .action-btn:active:not(:disabled) { transform: scale(0.94); }
   .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .action-btn svg { width: 15px; height: 15px; }
-  .action-btn.hint-btn { border-color: rgba(255, 138, 26, 0.45); color: var(--pixl-orange); }
-  .action-btn.hint-btn:hover:not(:disabled) { background: var(--pixl-orange); border-color: var(--pixl-orange); color: #0d0524; }
-  .action-btn.solve-btn { border-color: rgba(61, 245, 255, 0.45); color: var(--pixl-cyan); }
-  .action-btn.solve-btn:hover:not(:disabled) { background: var(--pixl-cyan); border-color: var(--pixl-cyan); color: #0d0524; }
-  .action-btn#btn-scramble:hover:not(:disabled) { background: var(--pixl-magenta); border-color: var(--pixl-magenta); }
+  .action-btn.hint-btn { border-color: rgba(255, 138, 26, 0.45); color: var(--fleur-orange); }
+  .action-btn.hint-btn:hover:not(:disabled) { background: var(--fleur-orange); border-color: var(--fleur-orange); color: #0d0524; }
+  .action-btn.solve-btn { border-color: rgba(61, 245, 255, 0.45); color: var(--fleur-cyan); }
+  .action-btn.solve-btn:hover:not(:disabled) { background: var(--fleur-cyan); border-color: var(--fleur-cyan); color: #0d0524; }
+  .action-btn#btn-scramble:hover:not(:disabled) { background: var(--fleur-magenta); border-color: var(--fleur-magenta); }
   .action-btn.simplify-btn {
     border-color: rgba(212, 255, 58, 0.5);
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     position: relative;
     overflow: visible;
   }
-  .action-btn.simplify-btn:hover:not(:disabled) { background: var(--pixl-lime); border-color: var(--pixl-lime); color: #0d0524; }
+  .action-btn.simplify-btn:hover:not(:disabled) { background: var(--fleur-lime); border-color: var(--fleur-lime); color: #0d0524; }
   .action-btn.simplify-btn .simplify-cost {
     position: absolute;
     top: -6px; right: -8px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #0d0524;
     border-radius: 999px;
     padding: 1px 5px 1px 4px;
@@ -283,7 +291,7 @@
     right: 14px;
     z-index: 5;
     pointer-events: none;
-    background: linear-gradient(135deg, var(--pixl-lime), #9ee23a);
+    background: linear-gradient(135deg, var(--fleur-lime), #9ee23a);
     color: #0d0524;
     padding: 8px 13px;
     border-radius: 12px;
@@ -338,7 +346,7 @@
   .reset-btn svg { width: 12px; height: 12px; opacity: 0.9; }
   .reset-btn:hover:not(:disabled) {
     background: rgba(255, 45, 146, 0.22);
-    border-color: var(--pixl-pink);
+    border-color: var(--fleur-pink);
     color: #fff;
     transform: scale(1.04);
   }
@@ -391,7 +399,7 @@
     padding: 7px 14px;
     border-radius: 999px;
     font-size: 12px;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     font-variant-numeric: tabular-nums;
     opacity: 0;
     visibility: hidden;
@@ -411,8 +419,8 @@
     margin: -4px -6px -4px 0;
     box-shadow: 0 0 14px rgba(212, 255, 58, 0.15);
   }
-  .cube-stats .hud-stat--solve svg { color: var(--pixl-lime); opacity: 1; width: 13px; height: 13px; }
-  .hud-stat--solve b { color: var(--pixl-lime) !important; font-size: 14px !important; }
+  .cube-stats .hud-stat--solve svg { color: var(--fleur-lime); opacity: 1; width: 13px; height: 13px; }
+  .hud-stat--solve b { color: var(--fleur-lime) !important; font-size: 14px !important; }
   .hud-stat--solve .hud-stat-label { color: rgba(212, 255, 58, 0.75) !important; }
   @media (max-width: 480px) {
     .cube-stats {
@@ -457,7 +465,7 @@
     padding: 8px 16px;
     border-radius: 999px;
     font-size: 13px;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     font-variant-numeric: tabular-nums;
   }
   .hud-stat {
@@ -467,7 +475,7 @@
     color: rgba(250, 250, 255, 0.85);
   }
   .hud-stat svg { width: 13px; height: 13px; opacity: 0.8; }
-  .hud-stat b { font-weight: 800; color: var(--pixl-white); }
+  .hud-stat b { font-weight: 800; color: var(--fleur-white); }
   .hud-stat-label {
     font-size: 10px;
     font-weight: 600;
@@ -498,7 +506,7 @@
     font-size: 18px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     margin-bottom: 10px;
   }
   .hud-win-stats {
@@ -530,7 +538,7 @@
     font-family: 'Bolota', 'Bowlby One', sans-serif;
     font-size: 20px;
     letter-spacing: 0.5px;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     font-variant-numeric: tabular-nums;
     line-height: 1.05;
   }
@@ -538,13 +546,13 @@
     background: linear-gradient(135deg, rgba(212, 255, 58, 0.18), rgba(255, 45, 146, 0.18));
     border-color: rgba(212, 255, 58, 0.4);
   }
-  .win-stat-score .win-stat-value { color: var(--pixl-lime); }
+  .win-stat-score .win-stat-value { color: var(--fleur-lime); }
 
   .hud-win-cta {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #0d0524;
     border: none;
     font-family: inherit;
@@ -566,7 +574,7 @@
     pointer-events: none;
     z-index: 5;
     width: 30px; height: 30px;
-    border: 2px solid var(--pixl-lime);
+    border: 2px solid var(--fleur-lime);
     border-radius: 50%;
     opacity: 0;
   }
@@ -620,8 +628,7 @@
   }
   @media (max-width: 480px) {
     .nav { padding: 0.55rem 1rem; }
-    .nav-logo svg { height: 20px; }
-    .nav-dev { display: none; }
+    .nav-logo { font-size: 19px; }
     .hero-cta-row .btn { padding: 13px 22px; font-size: 14px; }
     .cube-stage { max-width: 100%; }
     .hud-win { min-width: 320px; }
@@ -680,13 +687,13 @@
     font-weight: 700;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
   }
   .intro-tag .dot {
     width: 6px; height: 6px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--pixl-lime);
+    box-shadow: 0 0 10px var(--fleur-lime);
   }
   .intro-words {
     position: relative;
@@ -710,16 +717,16 @@
     transform-origin: 50% 100%;
     will-change: transform, opacity;
   }
-  .intro-word.w1 { color: var(--pixl-white); }
-  .intro-word.w2 { color: var(--pixl-magenta); text-shadow: 0 0 50px rgba(255, 45, 146, 0.45); }
-  .intro-word.w3 { color: var(--pixl-lime);    text-shadow: 0 0 60px rgba(212, 255, 58, 0.5); }
+  .intro-word.w1 { color: var(--fleur-white); }
+  .intro-word.w2 { color: var(--fleur-magenta); text-shadow: 0 0 50px rgba(255, 45, 146, 0.45); }
+  .intro-word.w3 { color: var(--fleur-lime);    text-shadow: 0 0 60px rgba(212, 255, 58, 0.5); }
   .intro-cta {
     position: relative;
     z-index: 2;
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #0d0524;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
@@ -771,7 +778,7 @@
   .orbit-arrow {
     position: absolute;
     width: 26px; height: 26px;
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     opacity: 0.6;
     filter: drop-shadow(0 0 8px rgba(212, 255, 58, 0.45));
   }
@@ -790,29 +797,29 @@
   .cube-corner--tl {
     top: 10px;
     left: 10px;
-    border-top: 3px solid var(--pixl-orange);
-    border-left: 3px solid var(--pixl-orange);
+    border-top: 3px solid var(--fleur-orange);
+    border-left: 3px solid var(--fleur-orange);
     border-top-left-radius: 14px;
   }
   .cube-corner--tr {
     top: 10px;
     right: 10px;
-    border-top: 3px solid var(--pixl-orange);
-    border-right: 3px solid var(--pixl-orange);
+    border-top: 3px solid var(--fleur-orange);
+    border-right: 3px solid var(--fleur-orange);
     border-top-right-radius: 14px;
   }
   .cube-corner--bl {
     bottom: 10px;
     left: 10px;
-    border-bottom: 3px solid var(--pixl-lime);
-    border-left: 3px solid var(--pixl-lime);
+    border-bottom: 3px solid var(--fleur-lime);
+    border-left: 3px solid var(--fleur-lime);
     border-bottom-left-radius: 14px;
   }
   .cube-corner--br {
     bottom: 10px;
     right: 10px;
-    border-bottom: 3px solid var(--pixl-lime);
-    border-right: 3px solid var(--pixl-lime);
+    border-bottom: 3px solid var(--fleur-lime);
+    border-right: 3px solid var(--fleur-lime);
     border-bottom-right-radius: 14px;
   }
   @media (max-width: 480px) {
@@ -912,7 +919,7 @@
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700;
     letter-spacing: 1.2px; text-transform: uppercase;
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     background: rgba(212, 255, 58, 0.12);
     border: 1px solid rgba(212, 255, 58, 0.3);
     padding: 5px 12px; border-radius: 999px;
@@ -920,9 +927,9 @@
   }
   .rules-eyebrow .dot {
     width: 6px; height: 6px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--pixl-lime);
+    box-shadow: 0 0 10px var(--fleur-lime);
   }
   .rules-title {
     font-family: 'Bolota', 'Bowlby One', sans-serif;
@@ -930,10 +937,10 @@
     line-height: 1;
     letter-spacing: -0.01em;
     text-transform: uppercase;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     margin-bottom: 1.5rem;
   }
-  .rules-title .lime-text { color: var(--pixl-lime); }
+  .rules-title .lime-text { color: var(--fleur-lime); }
   .rules-list {
     list-style: none;
     text-align: left;
@@ -953,16 +960,16 @@
     width: 38px; height: 38px;
     border-radius: 12px;
     background: rgba(107, 61, 245, 0.18);
-    color: var(--pixl-purple-light);
+    color: var(--fleur-purple-light);
     display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid rgba(167, 139, 250, 0.3);
   }
   .rules-icon svg { width: 18px; height: 18px; display: block; }
-  .rules-icon.orange { background: rgba(255, 138, 26, 0.16); color: var(--pixl-orange); border-color: rgba(255, 138, 26, 0.4); }
-  .rules-icon.lime   { background: rgba(212, 255, 58, 0.16); color: var(--pixl-lime);    border-color: rgba(212, 255, 58, 0.4); }
+  .rules-icon.orange { background: rgba(255, 138, 26, 0.16); color: var(--fleur-orange); border-color: rgba(255, 138, 26, 0.4); }
+  .rules-icon.lime   { background: rgba(212, 255, 58, 0.16); color: var(--fleur-lime);    border-color: rgba(212, 255, 58, 0.4); }
   .rules-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
   .rules-text b {
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     font-weight: 700;
     font-size: 14px;
     line-height: 1.35;
@@ -976,7 +983,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #0d0524;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
@@ -1037,7 +1044,7 @@
     border: 1px solid rgba(255,255,255,0.12);
     width: 32px; height: 32px;
     border-radius: 999px;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     padding: 0;
@@ -1049,7 +1056,7 @@
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700;
     letter-spacing: 1.2px; text-transform: uppercase;
-    color: var(--pixl-lime);
+    color: var(--fleur-lime);
     background: rgba(212, 255, 58, 0.12);
     border: 1px solid rgba(212, 255, 58, 0.3);
     padding: 5px 12px; border-radius: 999px;
@@ -1058,9 +1065,9 @@
   }
   .leaderboard-eyebrow .dot {
     width: 6px; height: 6px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--pixl-lime);
+    box-shadow: 0 0 10px var(--fleur-lime);
   }
   .leaderboard-title {
     font-family: 'Bolota', 'Bowlby One', sans-serif;
@@ -1068,7 +1075,7 @@
     line-height: 1;
     letter-spacing: -0.01em;
     text-transform: uppercase;
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     margin-bottom: 1.25rem;
   }
   .leaderboard-list {
@@ -1105,17 +1112,17 @@
   .leaderboard-row.is-rank-1 .leaderboard-rank { color: #ffd84d; }
   .leaderboard-row.is-rank-2 .leaderboard-rank { color: #d8d8e0; }
   .leaderboard-row.is-rank-3 .leaderboard-rank { color: #ffb070; }
-  .leaderboard-row.is-you .leaderboard-rank { color: var(--pixl-lime); }
+  .leaderboard-row.is-you .leaderboard-rank { color: var(--fleur-lime); }
   .leaderboard-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .leaderboard-name {
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     font-weight: 700;
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .leaderboard-row.is-you .leaderboard-name { color: var(--pixl-lime); }
+  .leaderboard-row.is-you .leaderboard-name { color: var(--fleur-lime); }
   .leaderboard-meta {
     color: rgba(255,255,255,0.45);
     font-size: 11px;
@@ -1132,11 +1139,11 @@
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     font-weight: 800;
     font-size: 17px;
-    color: var(--pixl-purple-light);
+    color: var(--fleur-purple-light);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.2px;
   }
-  .leaderboard-row.is-you .leaderboard-score { color: var(--pixl-lime); }
+  .leaderboard-row.is-you .leaderboard-score { color: var(--fleur-lime); }
   .leaderboard-actions {
     display: flex;
     gap: 10px;
@@ -1148,7 +1155,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: var(--pixl-lime);
+    background: var(--fleur-lime);
     color: #0d0524;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
@@ -1166,7 +1173,7 @@
   .leaderboard-cta svg { width: 14px; height: 14px; }
   .leaderboard-cta.secondary {
     background: rgba(255,255,255,0.06);
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     border: 1px solid rgba(255,255,255,0.18);
     box-shadow: none;
   }
@@ -1187,7 +1194,7 @@
   }
   .hud-win-cta.secondary {
     background: rgba(255,255,255,0.08);
-    color: var(--pixl-white);
+    color: var(--fleur-white);
     border: 1px solid rgba(255,255,255,0.18);
     box-shadow: none;
     padding: 9px 16px;
@@ -1198,34 +1205,13 @@
 </head>
 <body>
 
-<div class="leaderboard-modal" id="leaderboard-modal" role="dialog" aria-labelledby="leaderboard-title" aria-modal="true">
-  <div class="leaderboard-card">
-    <button class="leaderboard-close" id="leaderboard-close" aria-label="Close" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-    <div class="leaderboard-eyebrow">
-      <span class="dot"></span>
-      <span>Round results</span>
-    </div>
-    <h2 class="leaderboard-title" id="leaderboard-title">Top of the cube</h2>
-    <div class="leaderboard-list" id="leaderboard-list" role="list"></div>
-    <div class="leaderboard-actions">
-      <button class="leaderboard-cta secondary" id="leaderboard-back" type="button">Back</button>
-      <button class="leaderboard-cta" id="leaderboard-play-again" type="button">
-        Play again
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
 <div class="rules-modal" id="rules-modal" role="dialog" aria-labelledby="rules-title" aria-modal="true">
   <div class="rules-card">
     <div class="rules-eyebrow">
       <span class="dot"></span>
       <span>How to play</span>
     </div>
-    <h2 class="rules-title" id="rules-title">Crack the cube,<br><span class="lime-text">claim your prize.</span></h2>
+    <h2 class="rules-title" id="rules-title">A little cube,<br><span class="lime-text">just for Fleur.</span></h2>
     <ul class="rules-list">
       <li>
         <span class="rules-icon">
@@ -1241,8 +1227,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.5 1 2.3v0h6v0c0-.8.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
         </span>
         <div class="rules-text">
-          <b>Hints cost you points.</b>
-          <span>Tap the lightbulb to play the next optimal move — only do it when you're really stuck.</span>
+          <b>Hint plays the next move.</b>
+          <span>Tap the lightbulb when you'd like a nudge toward solved.</span>
         </div>
       </li>
       <li>
@@ -1250,22 +1236,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-8 4 16 3-8h5"/></svg>
         </span>
         <div class="rules-text">
-          <b>Simplify auto-solves for 5 hints.</b>
-          <span>If you're stuck for good, the lime button plays out the full solution — at the cost of 5 hints from your score.</span>
-        </div>
-      </li>
-      <li>
-        <span class="rules-icon lime">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-2V2H7v2H5a2 2 0 0 0-2 2v2a4 4 0 0 0 4 4c.21 1.69 1.69 3 3.5 3v3h-2v2h7v-2h-2v-3c1.81 0 3.29-1.31 3.5-3a4 4 0 0 0 4-4V6a2 2 0 0 0-2-2zM5 8V6h2v3.86A2 2 0 0 1 5 8zm14 0a2 2 0 0 1-2 1.86V6h2v2z"/></svg>
-        </span>
-        <div class="rules-text">
-          <b>Fastest time, fewest moves, fewest hints wins.</b>
-          <span>Every player walks away with at least £3 credit.</span>
+          <b>Simplify plays 5 in a row.</b>
+          <span>The lime button counts as 5 hints — handy when you just want a chunk solved.</span>
         </div>
       </li>
     </ul>
     <button class="rules-cta" id="rules-cta" type="button">
-      Best of luck
+      Have fun
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </button>
   </div>
@@ -1274,56 +1251,35 @@
 <div class="intro-overlay" id="intro-overlay">
   <div class="intro-tag">
     <span class="dot"></span>
-    <span>PIXL · A new game</span>
+    <span>For Fleur</span>
   </div>
   <div class="intro-words" id="intro-words">
     <span class="intro-word w1">Twist it.</span>
     <span class="intro-word w2">Solve it.</span>
-    <span class="intro-word w3">Win big.</span>
+    <span class="intro-word w3">Smile.</span>
   </div>
   <button class="intro-cta" id="intro-cta" type="button">
-    Start the game
+    Start
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
   </button>
-  <p class="intro-sub">Crack the cube. Unlock instant rewards.</p>
-  <div class="intro-credit">John Bell · Development page</div>
+  <p class="intro-sub">A little cube, made just for you.</p>
 </div>
 
 <section class="hero">
   <nav class="nav" aria-label="Main navigation">
-    <button class="nav-menu" aria-label="Open menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-    </button>
-    <div class="nav-logo" aria-label="PIXL">
-      <svg viewBox="0 0 218 54" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M86.6134 0.282227H69.4297V53.1618H86.6134V0.282227Z" fill="#471EB0"/>
-        <path d="M166.247 0.282227H141.946L127.808 14.3289L113.67 0.282227H89.3685L115.657 26.409L88.7222 53.1618H113.031L127.808 38.4811L142.584 53.1618H166.893L139.958 26.409L166.247 0.282227Z" fill="#471EB0"/>
-        <path d="M202.327 37.6704H187.381C185.798 37.6704 184.513 36.3941 184.513 34.8209V0.282227H167.329V33.3119C167.329 44.3004 176.329 53.2421 187.389 53.2421H218L202.327 37.6704Z" fill="#471EB0"/>
-        <path d="M59.7997 5.98927C55.9219 2.28096 50.8241 0.242188 45.4436 0.242188H17.1837L0 17.3149H45.8314C47.948 17.3149 49.6608 19.0165 49.6608 21.1195C49.6608 23.2225 47.948 24.9242 45.8314 24.9242H0V52.5037C0 52.7205 0.0242366 52.9372 0.0403943 53.1539H17.2241V42.037H46.1465C51.6724 42.037 56.8752 39.9019 60.7854 36.017C64.7521 32.0759 66.901 26.8425 66.8445 21.2801C66.7879 15.7096 64.5339 10.5163 60.5026 6.65548L59.7997 5.98125V5.98927Z" fill="#471EB0"/>
-      </svg>
-    </div>
-    <div class="nav-right">
-      <a href="#dev" class="nav-dev">Dev</a>
-      <button class="nav-cart" aria-label="Cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-      </button>
-    </div>
+    <div class="nav-logo" aria-label="Fleur">Fleur</div>
   </nav>
 
   <div class="hero-grid">
     <div class="hero-copy">
       <h1 class="hero-title">
-        <span class="hero-line line-1">Twist it.</span> <span class="hero-line line-2 pink">Solve it.</span> <span class="hero-line line-3 lime">Win big.</span>
+        <span class="hero-line line-1">Twist it.</span> <span class="hero-line line-2 pink">Solve it.</span> <span class="hero-line line-3 lime">Smile.</span>
       </h1>
       <p class="hero-sub">
-        Crack the cube and unlock instant rewards — devices, merch, and <strong>£3 credit guaranteed</strong> for everyone who plays. No catch, no draw.
+        A little cube, <strong>made just for you</strong>. No prize, no leaderboard — just a thing to fiddle with.
       </p>
       <div class="hero-cta-row">
-        <button type="button" class="btn btn-primary" id="btn-view-leaderboard">
-          View leaderboard
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
-        <button type="button" class="btn btn-ghost" id="btn-how-it-works">How it works</button>
+        <button type="button" class="btn btn-ghost" id="btn-how-it-works">How to play</button>
       </div>
     </div>
 
@@ -1410,10 +1366,6 @@
             </div>
           </div>
           <div class="hud-win-actions">
-            <button class="hud-win-cta secondary" id="btn-leaderboard" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M5 4h14v6a7 7 0 0 1-14 0V4z M5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3"/></svg>
-              Leaderboard
-            </button>
             <button class="hud-win-cta" id="btn-play-again" type="button">
               Play again
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -2426,107 +2378,6 @@
     showRulesModal();
   });
 
-  // ==================== LEADERBOARD MODAL ====================
-  const FAKE_LEADERBOARD = [
-    { name: 'Leon S.',   score: 3580, time: '0:24', moves: 22, hints: 0 },
-    { name: 'Ali B.',    score: 2890, time: '0:38', moves: 28, hints: 0 },
-    { name: 'River T.',  score: 2760, time: '0:45', moves: 31, hints: 1 },
-    { name: 'Skylar G.', score: 2510, time: '0:52', moves: 34, hints: 1 },
-    { name: 'Rowan L.',  score: 2390, time: '1:01', moves: 36, hints: 1 },
-    { name: 'Micah J.',  score: 2150, time: '1:14', moves: 38, hints: 2 },
-    { name: 'Quinn A.',  score: 1920, time: '1:22', moves: 41, hints: 2 },
-    { name: 'Riley M.',  score: 1780, time: '1:35', moves: 44, hints: 2 },
-    { name: 'Avery Z.',  score: 1540, time: '1:48', moves: 48, hints: 3 },
-  ];
-
-  const leaderboardModal = document.getElementById('leaderboard-modal');
-  const leaderboardList = document.getElementById('leaderboard-list');
-  const leaderboardClose = document.getElementById('leaderboard-close');
-  const leaderboardBack = document.getElementById('leaderboard-back');
-  const leaderboardPlayAgain = document.getElementById('leaderboard-play-again');
-  const btnLeaderboard = document.getElementById('btn-leaderboard');
-  let leaderboardActive = false;
-
-  function buildLeaderboard() {
-    const entries = FAKE_LEADERBOARD.map(e => ({ ...e, isYou: false }));
-    if (lastWin.score > 0) {
-      entries.push({
-        name: 'You',
-        score: lastWin.score,
-        time: lastWin.time,
-        moves: lastWin.moves,
-        hints: lastWin.hints,
-        isYou: true,
-      });
-    }
-    entries.sort((a, b) => b.score - a.score);
-    const top10 = entries.slice(0, 10);
-    leaderboardList.innerHTML = top10.map((e, i) => {
-      const rank = i + 1;
-      const cls = [
-        'leaderboard-row',
-        e.isYou ? 'is-you' : '',
-        rank <= 3 ? `is-rank-${rank}` : '',
-      ].filter(Boolean).join(' ');
-      const hintLabel = e.hints === 1 ? 'hint' : 'hints';
-      return `
-        <div class="${cls}" role="listitem">
-          <span class="leaderboard-rank">${rank}</span>
-          <div class="leaderboard-info">
-            <span class="leaderboard-name">${e.name}${e.isYou ? ' (You)' : ''}</span>
-            <span class="leaderboard-meta">
-              <span>${e.time}</span>
-              <span>${e.moves} moves</span>
-              <span>${e.hints} ${hintLabel}</span>
-            </span>
-          </div>
-          <span class="leaderboard-score">${e.score}</span>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function showLeaderboard() {
-    if (leaderboardActive) return;
-    leaderboardActive = true;
-    buildLeaderboard();
-    leaderboardModal.style.visibility = '';
-    const card = leaderboardModal.querySelector('.leaderboard-card');
-    const rows = leaderboardList.querySelectorAll('.leaderboard-row');
-    gsap.set(leaderboardModal, { autoAlpha: 0 });
-    gsap.set(card, { y: 30, scale: 0.94, autoAlpha: 0 });
-    gsap.set(rows, { autoAlpha: 0, x: -10 });
-    gsap.timeline()
-      .to(leaderboardModal, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
-      .to(card, { y: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: 'back.out(1.4)' }, '-=0.1')
-      .to(rows, { autoAlpha: 1, x: 0, duration: 0.32, stagger: 0.04, ease: 'power2.out' }, '-=0.2');
-    const you = leaderboardList.querySelector('.is-you');
-    if (you) setTimeout(() => you.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 600);
-  }
-
-  function hideLeaderboard() {
-    if (!leaderboardActive) return;
-    leaderboardActive = false;
-    const card = leaderboardModal.querySelector('.leaderboard-card');
-    gsap.timeline({
-      onComplete: () => { leaderboardModal.style.visibility = 'hidden'; }
-    })
-      .to(card, { scale: 0.95, autoAlpha: 0, duration: 0.25, ease: 'power2.in' })
-      .to(leaderboardModal, { autoAlpha: 0, duration: 0.25, ease: 'power2.inOut' }, '-=0.1');
-  }
-
-  btnLeaderboard.addEventListener('click', showLeaderboard);
-  document.getElementById('btn-view-leaderboard').addEventListener('click', showLeaderboard);
-  leaderboardClose.addEventListener('click', hideLeaderboard);
-  leaderboardBack.addEventListener('click', hideLeaderboard);
-  leaderboardPlayAgain.addEventListener('click', () => {
-    hideLeaderboard();
-    setTimeout(() => scramble(15), 200);
-  });
-  leaderboardModal.addEventListener('click', (e) => {
-    if (e.target === leaderboardModal) hideLeaderboard();
-  });
-
   // ==================== ORBIT ARROW + CORNER PULSE ====================
   {
     const arrows = gsap.utils.toArray('.orbit-arrow');
@@ -2636,11 +2487,6 @@
     if (!introDismissed && (e.key === 'Escape' || e.key === 'Enter')) {
       e.preventDefault();
       dismissIntro();
-      return;
-    }
-    if (leaderboardActive && e.key === 'Escape') {
-      e.preventDefault();
-      hideLeaderboard();
       return;
     }
     if (rulesModalActive && (e.key === 'Escape' || e.key === 'Enter')) {
